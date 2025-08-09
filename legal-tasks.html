@@ -37,9 +37,50 @@
         .cheat-sheet {
             font-size: 13px;
             color: #6b7280;
-            margin-bottom: 16px;
-            line-height: 1.8;
+            margin-bottom: 20px;
+            line-height: 1.6;
             font-family: 'SF Mono', Consolas, monospace;
+            background: rgba(107, 114, 128, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(107, 114, 128, 0.1);
+        }
+
+        .cheat-sheet-title {
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .cheat-sheet-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 24px;
+            align-items: center;
+        }
+
+        .cheat-item {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .cheat-symbol {
+            font-weight: 600;
+            min-width: 16px;
+        }
+
+        .cheat-item.type-item { color: #9ca3af; }
+        .cheat-item.client-item { color: #60a5fa; }
+        .cheat-item.case-item { color: #f472b6; }
+        .cheat-item.project-item { color: #4ade80; }
+        .cheat-item.priority-item { color: #ef4444; }
+        .cheat-item.date-item { color: #fbbf24; }
+        .cheat-item.hours-item { color: #a855f7; }
+
+        .cheat-symbol, .cheat-description {
+            font-weight: 600;
         }
 
         .task-input {
@@ -487,13 +528,94 @@
             align-items: center;
             margin-bottom: 8px;
         }
+
+        /* Checkbox Button */
+        .checkbox-button {
+            width: 16px;
+            height: 16px;
+            margin-right: 15px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .checkbox-button:hover {
+            border-color: #6b7280;
+        }
+
+        .checkbox-button.checked {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #ffffff;
+        }
+
+        .checkbox-button.checked:hover {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        /* Completed Task Styling */
+        .task-item.completed .task-title {
+            opacity: 0.65;
+            text-decoration: line-through;
+        }
+
+        .task-item.completed .badge:not(.timer-badge) {
+            opacity: 0.65;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .task-item.completed .badge:not(.timer-badge):hover {
+            transform: none;
+            border-color: transparent;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="entry-section">
             <div class="cheat-sheet">
-                ~ type  @ client  # case  ^ project  ! priority  📅 date/time  ⏱ hours
+                <div class="cheat-sheet-title">Quick Entry Commands:</div>
+                <div class="cheat-sheet-grid">
+                    <div class="cheat-item type-item">
+                        <span class="cheat-symbol">~</span>
+                        <span class="cheat-description">type</span>
+                    </div>
+                    <div class="cheat-item client-item">
+                        <span class="cheat-symbol">@</span>
+                        <span class="cheat-description">client</span>
+                    </div>
+                    <div class="cheat-item case-item">
+                        <span class="cheat-symbol">#</span>
+                        <span class="cheat-description">case</span>
+                    </div>
+                    <div class="cheat-item project-item">
+                        <span class="cheat-symbol">^</span>
+                        <span class="cheat-description">project</span>
+                    </div>
+                    <div class="cheat-item priority-item">
+                        <span class="cheat-symbol">!</span>
+                        <span class="cheat-description">priority</span>
+                    </div>
+                    <div class="cheat-item date-item">
+                        <span class="cheat-symbol">📅</span>
+                        <span class="cheat-description">date/time</span>
+                    </div>
+                    <div class="cheat-item hours-item">
+                        <span class="cheat-symbol">⏱</span>
+                        <span class="cheat-description">hours</span>
+                    </div>
+                </div>
             </div>
             <input 
                 type="text" 
@@ -704,7 +826,9 @@
                     timerStart: null,
                     timerElapsed: 0,
                     timerRunning: false,
-                    actualTime: 0
+                    actualTime: 0,
+                    // Add completion field:
+                    completed: false
                 };
 
                 let remaining = input;
@@ -915,11 +1039,21 @@
 
             createTaskElement(task) {
                 const div = document.createElement('div');
-                div.className = 'task-item';
+                div.className = `task-item ${task.completed ? 'completed' : ''}`;
                 
-                // Task header with timer button and title
+                // Task header with checkbox, timer button and title
                 const header = document.createElement('div');
                 header.className = 'task-header';
+                
+                // Checkbox button
+                const checkboxBtn = document.createElement('button');
+                checkboxBtn.className = `checkbox-button ${task.completed ? 'checked' : ''}`;
+                checkboxBtn.innerHTML = task.completed ? '✓' : '';
+                checkboxBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.toggleTaskCompletion(task.id);
+                };
+                header.appendChild(checkboxBtn);
                 
                 // Timer button
                 const timerBtn = document.createElement('button');
@@ -952,49 +1086,49 @@
                 badges.appendChild(this.createBadge(
                     (task.type || 'task'),
                     `type-badge type-${task.type || 'task'}`,
-                    () => this.cycleType(task.id)
+                    task.completed ? null : () => this.cycleType(task.id)
                 ));
                 
                 // 2. Priority badge (always has a value)
                 badges.appendChild(this.createBadge(
                     `!${task.priority}`,
                     `priority-badge priority-${task.priority}`,
-                    () => this.cyclePriority(task.id)
+                    task.completed ? null : () => this.cyclePriority(task.id)
                 ));
 
                 // 3. Client badge
                 badges.appendChild(this.createBadge(
                     task.client ? `@${task.client}` : `@ --`,
                     task.client ? 'client-badge' : 'client-badge empty',
-                    (badge) => this.editBadge(task.id, 'client', badge)
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'client', badge)
                 ));
 
                 // 4. Case badge
                 badges.appendChild(this.createBadge(
                     task.case ? `#${task.case}` : `# --`,
                     task.case ? 'case-badge' : 'case-badge empty',
-                    (badge) => this.editBadge(task.id, 'case', badge)
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'case', badge)
                 ));
 
                 // 5. Project badge
                 badges.appendChild(this.createBadge(
                     task.project ? `^${task.project}` : `^ --`,
                     task.project ? 'project-badge' : 'project-badge empty',
-                    (badge) => this.editBadge(task.id, 'project', badge)
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'project', badge)
                 ));
 
                 // 6. Date badge
                 badges.appendChild(this.createBadge(
                     task.doDate ? `📅 ${task.doDate}` : `📅 --`,
                     task.doDate ? 'date-badge' : 'date-badge empty',
-                    (badge) => this.editBadge(task.id, 'doDate', badge)
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'doDate', badge)
                 ));
 
                 // 7. Hours badge
                 badges.appendChild(this.createBadge(
                     task.hours ? `⏱ ${task.hours}` : `⏱ --`,
                     task.hours ? 'hours-badge' : 'hours-badge empty',
-                    (badge) => this.editBadge(task.id, 'hours', badge)
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'hours', badge)
                 ));
 
                 // 8. Timer badge (actual time)
@@ -1029,8 +1163,19 @@
                 const badge = document.createElement('span');
                 badge.className = `badge ${className}`;
                 badge.textContent = text;
-                badge.onclick = () => onClick(badge);
+                if (onClick) {
+                    badge.onclick = () => onClick(badge);
+                }
                 return badge;
+            }
+
+            toggleTaskCompletion(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                TaskStorage.updateTask(taskId, { completed: !task.completed });
+                this.render();
             }
 
             editTitle(taskId, element) {

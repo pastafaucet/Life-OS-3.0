@@ -1,0 +1,883 @@
+# Legal Task Entry System - Implementation Specification
+**For Claude Code / Visual Studio Code Development**
+
+## Project Overview
+Build a minimalist, trust-first legal task entry system with the EXACT implementation shown below. This is a single-page application using pure HTML/CSS/JavaScript with localStorage for persistence.
+
+## Critical Requirements
+1. **NO frameworks** - Pure HTML/CSS/JavaScript only
+2. **NO build tools** - Single HTML file that runs directly
+3. **NO external dependencies** - Everything inline
+4. **EXACT colors and styling** - Do not deviate from specifications
+5. **EXACT parser logic** - Must handle multi-word values correctly
+
+## Complete Working Implementation
+
+Create a file named `legal-tasks.html` with the following EXACT code:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Task Entry System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Entry Section */
+        .entry-section {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .cheat-sheet {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 16px;
+            line-height: 1.8;
+            font-family: 'SF Mono', Consolas, monospace;
+        }
+
+        .task-input {
+            width: 100%;
+            background-color: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .task-input::placeholder {
+            color: #6b7280;
+        }
+
+        .task-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Task List */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Task Item */
+        .task-item {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            border-color: #2a2a2a;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .task-title:hover {
+            color: #3b82f6;
+        }
+
+        .task-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .badge:hover {
+            transform: translateY(-1px);
+            border-color: currentColor;
+        }
+
+        /* Type badges */
+        .type-badge {
+            cursor: pointer;
+        }
+
+        .type-task {
+            background-color: rgba(107, 114, 128, 0.1);
+            color: #9ca3af;
+        }
+
+        .type-event {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .type-deadline {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* Priority badges */
+        .priority-badge {
+            cursor: pointer;
+        }
+
+        .priority-critical {
+            background-color: rgba(248, 113, 113, 0.1);
+            color: #f87171;
+        }
+
+        .priority-important {
+            background-color: rgba(251, 146, 60, 0.1);
+            color: #fb923c;
+        }
+
+        .priority-strategic {
+            background-color: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+        }
+
+        .priority-waiting {
+            background-color: rgba(192, 132, 252, 0.1);
+            color: #c084fc;
+        }
+
+        .priority-someday {
+            background-color: rgba(167, 139, 250, 0.1);
+            color: #a78bfa;
+        }
+
+        .client-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .client-badge.empty {
+            background-color: rgba(59, 130, 246, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .client-badge.empty:hover {
+            color: #60a5fa;
+            border-color: #60a5fa;
+        }
+
+        .case-badge {
+            background-color: rgba(236, 72, 153, 0.1);
+            color: #f472b6;
+        }
+
+        .case-badge.empty {
+            background-color: rgba(236, 72, 153, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .case-badge.empty:hover {
+            color: #f472b6;
+            border-color: #f472b6;
+        }
+
+        .project-badge {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+
+        .project-badge.empty {
+            background-color: rgba(34, 197, 94, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .project-badge.empty:hover {
+            color: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .date-badge {
+            background-color: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+        }
+
+        .date-badge.empty {
+            background-color: rgba(251, 191, 36, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .date-badge.empty:hover {
+            color: #fbbf24;
+            border-color: #fbbf24;
+        }
+
+        .hours-badge {
+            background-color: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+        }
+
+        .hours-badge.empty {
+            background-color: rgba(168, 85, 247, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .hours-badge.empty:hover {
+            color: #a855f7;
+            border-color: #a855f7;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Inline Edit */
+        .inline-edit {
+            background-color: #1f2937;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            padding: 2px 8px;
+            color: #ffffff;
+            font-size: inherit;
+            font-family: inherit;
+            outline: none;
+            min-width: 80px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .task-item {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="entry-section">
+            <div class="cheat-sheet">
+                ~ type  @ client  # case  ^ project  ! priority  📅 date/time  ⏱ hours
+            </div>
+            <input 
+                type="text" 
+                class="task-input" 
+                placeholder="Enter task..."
+                id="taskInput"
+            >
+        </div>
+        
+        <div class="task-list" id="taskList"></div>
+    </div>
+
+    <script>
+        // Priority levels and their properties
+        const PRIORITIES = {
+            critical: { color: '#f87171', bg: 'rgba(248, 113, 113, 0.1)' },
+            important: { color: '#fb923c', bg: 'rgba(251, 146, 60, 0.1)' },
+            strategic: { color: '#4ade80', bg: 'rgba(74, 222, 128, 0.1)' },
+            waiting: { color: '#c084fc', bg: 'rgba(192, 132, 252, 0.1)' },
+            someday: { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' }
+        };
+
+        const PRIORITY_ORDER = ['critical', 'important', 'strategic', 'waiting', 'someday'];
+
+        // Storage management
+        class TaskStorage {
+            static get() {
+                const data = localStorage.getItem('legalTasks');
+                return data ? JSON.parse(data) : { tasks: [], nextId: 1 };
+            }
+
+            static save(data) {
+                localStorage.setItem('legalTasks', JSON.stringify(data));
+            }
+
+            static addTask(task) {
+                const data = this.get();
+                task.id = data.nextId++;
+                data.tasks.push(task);
+                this.save(data);
+                return task;
+            }
+
+            static updateTask(id, updates) {
+                const data = this.get();
+                const taskIndex = data.tasks.findIndex(t => t.id === id);
+                if (taskIndex !== -1) {
+                    data.tasks[taskIndex] = { ...data.tasks[taskIndex], ...updates };
+                    this.save(data);
+                }
+            }
+
+            static deleteTask(id) {
+                const data = this.get();
+                data.tasks = data.tasks.filter(t => t.id !== id);
+                this.save(data);
+            }
+        }
+
+        // Task parser
+        class TaskParser {
+            static parse(input) {
+                const task = {
+                    originalInput: input,
+                    type: 'task', // default
+                    title: '',
+                    client: '',
+                    case: '',
+                    project: '',
+                    priority: 'strategic',
+                    doDate: '',
+                    hours: ''
+                };
+
+                let remaining = input;
+
+                // Parse hash commands first (before date/time)
+                remaining = this.extractType(remaining, task);
+                remaining = this.extractClient(remaining, task);
+                remaining = this.extractCase(remaining, task);
+                remaining = this.extractProject(remaining, task);
+                remaining = this.extractPriority(remaining, task);
+                remaining = this.extractHours(remaining, task);
+
+                // Parse date/time after hash commands
+                const dateResult = this.parseDateTime(remaining);
+                if (dateResult.date) {
+                    task.doDate = dateResult.date;
+                    remaining = dateResult.remaining;
+                }
+
+                // Clean and set title
+                task.title = remaining.trim();
+
+                return task;
+            }
+
+            static parseDateTime(input) {
+                // Common date/time patterns - check the entire string
+                const patterns = [
+                    // Date + time patterns
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?\s+\d{1,2}:\d{2}\s*(?:am|pm)?)\s*$/i,
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?\s+\d{1,2}\s*(?:am|pm))\s*$/i,
+                    
+                    // Date only patterns
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?)\s*$/i,
+                    
+                    // Time only patterns
+                    /\b(\d{1,2}:\d{2}\s*(?:am|pm)?)\s*$/i,
+                    /\b(\d{1,2}\s*(?:am|pm))\s*$/i,
+                    
+                    // Relative dates with optional time
+                    /\b((?:today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)(?:\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)?)?)\s*$/i
+                ];
+
+                for (const pattern of patterns) {
+                    const match = input.match(pattern);
+                    if (match) {
+                        return {
+                            date: match[1],
+                            remaining: input.substring(0, match.index).trim()
+                        };
+                    }
+                }
+
+                return { date: '', remaining: input };
+            }
+
+            static extractType(input, task) {
+                const typePattern = /~(task|event|deadline)\b/i;
+                const match = input.match(typePattern);
+                if (match) {
+                    task.type = match[1].toLowerCase();
+                    return input.replace(match[0], '').trim();
+                }
+                // Auto-detection will go here later
+                return input;
+            }
+
+            static extractClient(input, task) {
+                return this.extractHashCommand(input, '@', (value) => {
+                    task.client = value;
+                });
+            }
+
+            static extractCase(input, task) {
+                return this.extractHashCommand(input, '#', (value) => {
+                    task.case = value;
+                });
+            }
+
+            static extractProject(input, task) {
+                return this.extractHashCommand(input, '\\^', (value) => {
+                    task.project = value;
+                });
+            }
+
+            static extractPriority(input, task) {
+                const priorityPattern = /!(critical|important|strategic|waiting|someday)\b/i;
+                const match = input.match(priorityPattern);
+                if (match) {
+                    task.priority = match[1].toLowerCase();
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractHours(input, task) {
+                // Match patterns like: 15m, 1h, 2h, 4h, 1.5h, 30m
+                const hoursPattern = /\b(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours?|m|min|mins?)\b/i;
+                const match = input.match(hoursPattern);
+                if (match) {
+                    const value = match[1];
+                    const unit = match[2].toLowerCase();
+                    
+                    // Normalize to display format
+                    if (unit.startsWith('h')) {
+                        task.hours = value + 'h';
+                    } else {
+                        task.hours = value + 'm';
+                    }
+                    
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractHashCommand(input, symbol, setter) {
+                // Look for the symbol
+                const symbolIndex = input.indexOf(symbol === '\\^' ? '^' : symbol);
+                if (symbolIndex === -1) return input;
+                
+                // Find where the value ends by looking for:
+                // 1. Next hash command symbol
+                // 2. Date/time pattern
+                // 3. End of string
+                let endIndex = input.length;
+                let valueStart = symbolIndex + 1;
+                
+                // Skip whitespace after symbol
+                while (valueStart < input.length && input[valueStart] === ' ') {
+                    valueStart++;
+                }
+                
+                // Look for next boundary
+                for (let i = valueStart; i < input.length; i++) {
+                    const char = input[i];
+                    const restOfString = input.substring(i);
+                    
+                    // Check for next hash command
+                    if (['@', '#', '^', '!', '~'].includes(char)) {
+                        endIndex = i;
+                        break;
+                    }
+                    
+                    // Check for date/time patterns
+                    if (this.looksLikeDateTime(restOfString)) {
+                        endIndex = i;
+                        break;
+                    }
+                }
+                
+                const value = input.substring(valueStart, endIndex).trim();
+                setter(value);
+                
+                // Remove the extracted part
+                return (input.substring(0, symbolIndex) + ' ' + input.substring(endIndex)).trim();
+            }
+            
+            static looksLikeDateTime(str) {
+                // Check if string starts with common date/time patterns
+                const patterns = [
+                    /^\d{1,2}[-\/]\d{1,2}/,  // 8/12, 8-12
+                    /^\d{1,2}:\d{2}/,         // 3:30
+                    /^\d{1,2}(?:am|pm)/i,     // 3pm
+                    /^(today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i
+                ];
+                
+                return patterns.some(pattern => pattern.test(str));
+            }
+        }
+
+        // UI Manager
+        class UIManager {
+            constructor() {
+                this.taskInput = document.getElementById('taskInput');
+                this.taskList = document.getElementById('taskList');
+                this.setupEventListeners();
+                this.render();
+            }
+
+            setupEventListeners() {
+                this.taskInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && this.taskInput.value.trim()) {
+                        this.addTask();
+                    }
+                });
+            }
+
+            addTask() {
+                const input = this.taskInput.value.trim();
+                if (!input) return;
+
+                const task = TaskParser.parse(input);
+                TaskStorage.addTask(task);
+                this.taskInput.value = '';
+                this.render();
+            }
+
+            render() {
+                const data = TaskStorage.get();
+                this.taskList.innerHTML = '';
+                
+                data.tasks.forEach(task => {
+                    this.taskList.appendChild(this.createTaskElement(task));
+                });
+            }
+
+            createTaskElement(task) {
+                const div = document.createElement('div');
+                div.className = 'task-item';
+                
+                // Title
+                const title = document.createElement('div');
+                title.className = 'task-title';
+                title.textContent = task.title || 'Untitled task';
+                title.onclick = () => this.editTitle(task.id, title);
+                div.appendChild(title);
+
+                // Badges container
+                const badges = document.createElement('div');
+                badges.className = 'task-badges';
+
+                // Always show all badges in order
+                
+                // 1. Type badge (task/event/deadline)
+                badges.appendChild(this.createBadge(
+                    (task.type || 'task'),
+                    `type-badge type-${task.type || 'task'}`,
+                    () => this.cycleType(task.id)
+                ));
+                
+                // 2. Priority badge (always has a value)
+                badges.appendChild(this.createBadge(
+                    `!${task.priority}`,
+                    `priority-badge priority-${task.priority}`,
+                    () => this.cyclePriority(task.id)
+                ));
+
+                // 3. Client badge
+                badges.appendChild(this.createBadge(
+                    task.client ? `@${task.client}` : `@ --`,
+                    task.client ? 'client-badge' : 'client-badge empty',
+                    (badge) => this.editBadge(task.id, 'client', badge)
+                ));
+
+                // 4. Case badge
+                badges.appendChild(this.createBadge(
+                    task.case ? `#${task.case}` : `# --`,
+                    task.case ? 'case-badge' : 'case-badge empty',
+                    (badge) => this.editBadge(task.id, 'case', badge)
+                ));
+
+                // 5. Project badge
+                badges.appendChild(this.createBadge(
+                    task.project ? `^${task.project}` : `^ --`,
+                    task.project ? 'project-badge' : 'project-badge empty',
+                    (badge) => this.editBadge(task.id, 'project', badge)
+                ));
+
+                // 6. Date badge
+                badges.appendChild(this.createBadge(
+                    task.doDate ? `📅 ${task.doDate}` : `📅 --`,
+                    task.doDate ? 'date-badge' : 'date-badge empty',
+                    (badge) => this.editBadge(task.id, 'doDate', badge)
+                ));
+
+                // 7. Hours badge
+                badges.appendChild(this.createBadge(
+                    task.hours ? `⏱ ${task.hours}` : `⏱ --`,
+                    task.hours ? 'hours-badge' : 'hours-badge empty',
+                    (badge) => this.editBadge(task.id, 'hours', badge)
+                ));
+
+                div.appendChild(badges);
+
+                // Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '✕';
+                deleteBtn.onclick = () => {
+                    TaskStorage.deleteTask(task.id);
+                    this.render();
+                };
+                div.appendChild(deleteBtn);
+
+                return div;
+            }
+
+            createBadge(text, className, onClick) {
+                const badge = document.createElement('span');
+                badge.className = `badge ${className}`;
+                badge.textContent = text;
+                badge.onclick = () => onClick(badge);
+                return badge;
+            }
+
+            editTitle(taskId, element) {
+                const currentText = element.textContent;
+                const input = this.createInlineEdit(currentText, (value) => {
+                    if (value.trim()) {
+                        TaskStorage.updateTask(taskId, { title: value.trim() });
+                        this.render();
+                    } else {
+                        element.textContent = currentText;
+                    }
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            editBadge(taskId, field, element) {
+                const currentValue = element.textContent.replace(/[@#^📅⏱]\s*/, '').replace('--', '').trim();
+                const prefix = element.textContent.match(/[@#^📅⏱]/)?.[0] || '';
+                
+                const input = this.createInlineEdit(currentValue, (value) => {
+                    TaskStorage.updateTask(taskId, { [field]: value.trim() });
+                    this.render();
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            cycleType(taskId) {
+                const types = ['task', 'event', 'deadline'];
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const currentType = task.type || 'task';
+                const currentIndex = types.indexOf(currentType);
+                const nextIndex = (currentIndex + 1) % types.length;
+                
+                TaskStorage.updateTask(taskId, { type: types[nextIndex] });
+                this.render();
+            }
+
+            cyclePriority(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const currentIndex = PRIORITY_ORDER.indexOf(task.priority);
+                const nextIndex = (currentIndex + 1) % PRIORITY_ORDER.length;
+                
+                TaskStorage.updateTask(taskId, { priority: PRIORITY_ORDER[nextIndex] });
+                this.render();
+            }
+
+            createInlineEdit(value, onSave) {
+                const input = document.createElement('input');
+                input.className = 'inline-edit';
+                input.value = value;
+                
+                const save = () => {
+                    input.removeEventListener('blur', save);
+                    onSave(input.value);
+                };
+                
+                input.addEventListener('blur', save);
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        save();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        input.removeEventListener('blur', save);
+                        onSave(value); // Restore original
+                    }
+                });
+                
+                // Auto-size the input
+                const testSpan = document.createElement('span');
+                testSpan.style.visibility = 'hidden';
+                testSpan.style.position = 'absolute';
+                testSpan.style.fontSize = getComputedStyle(input).fontSize;
+                testSpan.textContent = value || 'MM'; // Minimum width
+                document.body.appendChild(testSpan);
+                input.style.width = Math.max(80, testSpan.offsetWidth + 20) + 'px';
+                document.body.removeChild(testSpan);
+                
+                return input;
+            }
+        }
+
+        // Initialize the app
+        new UIManager();
+    </script>
+</body>
+</html>
+```
+
+## Test Cases to Verify
+
+After implementation, test these EXACT inputs to ensure the parser works correctly:
+
+1. **Basic task**: `Call Bob`
+   - Should show: task, !strategic, and all empty badges
+
+2. **Complex task**: `Deposition of Smith ~event @Johnson #ABC-v-XYZ ^Discovery !important 8/15 10am 2h`
+   - Type: event (blue)
+   - Priority: important (orange)
+   - Client: Johnson
+   - Case: ABC-v-XYZ
+   - Project: Discovery
+   - Date: 8/15 10am
+   - Hours: 2h
+
+3. **Multi-word values**: `Review contract @Miller & Associates #Case 2023-45 tomorrow 3pm`
+   - Client: Miller & Associates
+   - Case: Case 2023-45
+   - Date: tomorrow 3pm
+
+4. **Date parsing**: `Call Tim Kral re Yagman cases #Francis 8/12 11:30 am`
+   - Case: Francis (NOT "Francis 8/12 11:30 am")
+   - Date: 8/12 11:30 am
+
+## Key Implementation Details
+
+### Colors (EXACT hex values)
+- Background: #000000
+- Container: #0a0a0a
+- Borders: #1a1a1a
+- Text: #ffffff
+- Gray text: #6b7280
+
+### Badge Colors
+- task: #9ca3af
+- event: #60a5fa
+- deadline: #ef4444
+- !critical: #f87171
+- !important: #fb923c
+- !strategic: #4ade80
+- !waiting: #c084fc
+- !someday: #a78bfa (NOT gray)
+
+### Parser Rules
+1. Parse type (~) first
+2. Parse other hash commands (@, #, ^, !)
+3. Parse hours (15m, 2h, etc)
+4. Parse date/time AFTER hash commands
+5. Remaining text becomes title
+
+### Badge Order (ALWAYS)
+1. Type (task/event/deadline)
+2. Priority (!strategic, etc)
+3. Client (@ --)
+4. Case (# --)
+5. Project (^ --)
+6. Date (📅 --)
+7. Hours (⏱ --)
+
+### Empty Badge Behavior
+- Show "--" for empty values
+- Gray color (#6b7280)
+- Dashed border
+- Click to edit
+- Hover brightens to field color
+
+## DO NOT
+- Add any CSS frameworks
+- Change any colors
+- Add animations beyond specified
+- Modify the parser logic
+- Change badge order
+- Add features not specified
+- Use any external libraries
+
+## Additional Notes for Claude Code
+
+This is a COMPLETE, WORKING implementation. Do not "improve" or "enhance" it unless specifically asked. The goal is to recreate this EXACTLY as specified so it matches the prototype already built and tested.
+
+When building additional views (Today Dashboard, Week View, etc.), maintain the same visual style and color scheme established here.

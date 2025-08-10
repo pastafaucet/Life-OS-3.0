@@ -1099,6 +1099,10 @@
                     if (timeEl) timeEl.textContent = this.formatTime(total);
                     if (taskEl) taskEl.textContent = task.title || 'Untitled task';
                     if (cardEl) cardEl.style.display = 'block';
+                } else {
+                    // No task found or timer stopped - hide the card
+                    const cardEl = document.getElementById('activeTimerCard');
+                    if (cardEl) cardEl.style.display = 'none';
                 }
             }
 
@@ -1723,17 +1727,241 @@
             }
 
             showTimerModal(taskId) {
-                // Timer modal functionality would go here
-                alert('Timer modal functionality coming soon!');
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                // Create modal overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'timer-modal-overlay';
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.className = 'timer-modal';
+                
+                // Modal title
+                const title = document.createElement('h3');
+                title.textContent = `Adjust Timer for Task`;
+                modal.appendChild(title);
+                
+                // Date input row
+                const dateRow = document.createElement('div');
+                dateRow.className = 'timer-modal-row';
+                
+                const dateLabel = document.createElement('label');
+                dateLabel.textContent = 'Date:';
+                dateRow.appendChild(dateLabel);
+                
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.value = new Date().toISOString().split('T')[0];
+                dateRow.appendChild(dateInput);
+                
+                modal.appendChild(dateRow);
+                
+                // Start time row
+                const startRow = document.createElement('div');
+                startRow.className = 'timer-modal-row';
+                
+                const startLabel = document.createElement('label');
+                startLabel.textContent = 'Start:';
+                startRow.appendChild(startLabel);
+                
+                const startInput = document.createElement('input');
+                startInput.type = 'time';
+                startInput.value = '09:00';
+                startRow.appendChild(startInput);
+                
+                modal.appendChild(startRow);
+                
+                // End time row
+                const endRow = document.createElement('div');
+                endRow.className = 'timer-modal-row';
+                
+                const endLabel = document.createElement('label');
+                endLabel.textContent = 'End:';
+                endRow.appendChild(endLabel);
+                
+                const endInput = document.createElement('input');
+                endInput.type = 'time';
+                endInput.value = '10:00';
+                endRow.appendChild(endInput);
+                
+                modal.appendChild(endRow);
+                
+                // Quick buttons
+                const quickButtons = document.createElement('div');
+                quickButtons.className = 'quick-buttons';
+                
+                const quickTimes = [
+                    { label: 'Just now', minutes: 0 },
+                    { label: '15m ago', minutes: 15 },
+                    { label: '30m ago', minutes: 30 },
+                    { label: '1h ago', minutes: 60 }
+                ];
+                
+                quickTimes.forEach(quick => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quick-button';
+                    btn.textContent = quick.label;
+                    btn.onclick = () => {
+                        const now = new Date();
+                        const endTime = new Date(now);
+                        const startTime = new Date(now - (quick.minutes * 60 * 1000));
+                        
+                        dateInput.value = now.toISOString().split('T')[0];
+                        startInput.value = startTime.toTimeString().slice(0, 5);
+                        endInput.value = endTime.toTimeString().slice(0, 5);
+                        updateTotal();
+                    };
+                    quickButtons.appendChild(btn);
+                });
+                
+                modal.appendChild(quickButtons);
+                
+                // Total display
+                const totalDisplay = document.createElement('div');
+                totalDisplay.className = 'timer-total';
+                totalDisplay.textContent = 'Total: 1:00';
+                modal.appendChild(totalDisplay);
+                
+                // Update total function
+                const updateTotal = () => {
+                    const startTime = startInput.value;
+                    const endTime = endInput.value;
+                    
+                    if (startTime && endTime) {
+                        const [startHours, startMinutes] = startTime.split(':').map(Number);
+                        const [endHours, endMinutes] = endTime.split(':').map(Number);
+                        
+                        const startTotalMinutes = startHours * 60 + startMinutes;
+                        const endTotalMinutes = endHours * 60 + endMinutes;
+                        
+                        let diffMinutes = endTotalMinutes - startTotalMinutes;
+                        if (diffMinutes < 0) diffMinutes += 24 * 60; // Handle next day
+                        
+                        const diffSeconds = diffMinutes * 60;
+                        totalDisplay.textContent = `Total: ${TimerManager.formatTime(diffSeconds)}`;
+                    }
+                };
+                
+                startInput.addEventListener('input', updateTotal);
+                endInput.addEventListener('input', updateTotal);
+                
+                // Actions
+                const actions = document.createElement('div');
+                actions.className = 'timer-modal-actions';
+                
+                // Clear button
+                const clearBtn = document.createElement('button');
+                clearBtn.className = 'clear-btn';
+                clearBtn.textContent = 'Clear';
+                clearBtn.onclick = () => {
+                    TaskStorage.updateTask(taskId, { 
+                        timerElapsed: 0,
+                        actualTime: 0,
+                        timerStart: null,
+                        timerRunning: false
+                    });
+                    if (task.timerRunning) {
+                        TimerManager.stopTimer(taskId);
+                    }
+                    document.body.removeChild(overlay);
+                    this.render();
+                    this.renderCommandCenter();
+                };
+                actions.appendChild(clearBtn);
+                
+                // Cancel button
+                const cancelBtn = document.createElement('button');
+                cancelBtn.className = 'cancel-btn';
+                cancelBtn.textContent = 'Cancel';
+                cancelBtn.onclick = () => {
+                    document.body.removeChild(overlay);
+                };
+                actions.appendChild(cancelBtn);
+                
+                // Save button
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'save-btn';
+                saveBtn.textContent = 'Save';
+                saveBtn.onclick = () => {
+                    const startTime = startInput.value;
+                    const endTime = endInput.value;
+                    
+                    if (startTime && endTime) {
+                        const [startHours, startMinutes] = startTime.split(':').map(Number);
+                        const [endHours, endMinutes] = endTime.split(':').map(Number);
+                        
+                        const startTotalMinutes = startHours * 60 + startMinutes;
+                        const endTotalMinutes = endHours * 60 + endMinutes;
+                        
+                        let diffMinutes = endTotalMinutes - startTotalMinutes;
+                        if (diffMinutes < 0) diffMinutes += 24 * 60; // Handle next day
+                        
+                        const diffSeconds = diffMinutes * 60;
+                        
+                        // Stop any running timer first
+                        if (task.timerRunning) {
+                            TimerManager.stopTimer(taskId);
+                        }
+                        
+                        TaskStorage.updateTask(taskId, { 
+                            timerElapsed: diffSeconds,
+                            actualTime: diffSeconds,
+                            timerStart: null,
+                            timerRunning: false
+                        });
+                        
+                        document.body.removeChild(overlay);
+                        this.render();
+                        this.renderCommandCenter();
+                    }
+                };
+                actions.appendChild(saveBtn);
+                
+                modal.appendChild(actions);
+                
+                // Close on overlay click
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) {
+                        document.body.removeChild(overlay);
+                    }
+                };
+                
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                // Initialize total display
+                updateTotal();
             }
 
             renderCommandCenter() {
                 if (currentView !== 'command-center') return;
                 
+                // Check for active timers and update the active timer card visibility
+                const data = TaskStorage.get();
+                const activeTimer = data.tasks.find(task => task.timerRunning);
+                const activeTimerCard = document.getElementById('activeTimerCard');
+                
+                if (activeTimerCard) {
+                    if (activeTimer) {
+                        activeTimerCard.style.display = 'block';
+                        // Update the display with current info
+                        const timeEl = document.getElementById('activeTimerTime');
+                        const taskEl = document.getElementById('activeTimerTask');
+                        if (timeEl && taskEl) {
+                            const totalElapsed = TimerManager.getTotalElapsed(activeTimer.id);
+                            timeEl.textContent = TimerManager.formatTime(totalElapsed);
+                            taskEl.textContent = activeTimer.title || 'Untitled task';
+                        }
+                    } else {
+                        activeTimerCard.style.display = 'none';
+                    }
+                }
+                
                 const container = document.getElementById('todaysFocus');
                 if (!container) return;
-                
-                const data = TaskStorage.get();
                 
                 const today = new Date();
                 const todayStr = today.toISOString().split('T')[0];
@@ -2038,16 +2266,14 @@
                 );
                 badgesContainer.appendChild(hoursBadge);
                 
-                // Timer badge (opens modal)
+                // Timer badge (opens modal) - always show, even if empty
                 const timerElapsed = TimerManager.getTotalElapsed(task.id);
-                if (timerElapsed > 0) {
-                    const timerBadge = this.createCompactBadge(
-                        `⏲${TimerManager.formatTime(timerElapsed)}`,
-                        'compact-badge badge-timer',
-                        () => this.showTimerModal(task.id)
-                    );
-                    badgesContainer.appendChild(timerBadge);
-                }
+                const timerBadge = this.createCompactBadge(
+                    timerElapsed > 0 ? `⏲${TimerManager.formatTime(timerElapsed)}` : `⏲--`,
+                    timerElapsed > 0 ? 'compact-badge badge-timer' : 'compact-badge badge-timer empty',
+                    () => this.showTimerModal(task.id)
+                );
+                badgesContainer.appendChild(timerBadge);
                 
                 content.appendChild(badgesContainer);
                 div.appendChild(content);
@@ -2136,6 +2362,13 @@
             const runningTask = data.tasks.find(task => task.timerRunning);
             if (runningTask) {
                 TimerManager.stopTimer(runningTask.id);
+                
+                // Hide the active timer card
+                const activeTimerCard = document.getElementById('activeTimerCard');
+                if (activeTimerCard) {
+                    activeTimerCard.style.display = 'none';
+                }
+                
                 uiManager.render();
                 uiManager.renderCommandCenter();
             }

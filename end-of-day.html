@@ -106,72 +106,6 @@
             color: #9ca3af;
         }
 
-        /* Timer Alert */
-        .timer-alert {
-            background: rgba(239, 68, 68, 0.1);
-            border: 2px solid #ef4444;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { border-color: #ef4444; }
-            50% { border-color: #f87171; }
-        }
-
-        .timer-alert h3 {
-            color: #ef4444;
-            font-size: 20px;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .timer-details {
-            background: #111111;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 16px 0;
-        }
-
-        .timer-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
-
-        .timer-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .timer-btn.primary {
-            background: #4ade80;
-            color: #000000;
-        }
-
-        .timer-btn.secondary {
-            background: #6b7280;
-            color: #ffffff;
-        }
-
-        .timer-btn.danger {
-            background: #ef4444;
-            color: #ffffff;
-        }
-
-        .timer-btn:hover {
-            opacity: 0.8;
-        }
-
         /* Main Grid Layout */
         .main-grid {
             display: grid;
@@ -203,62 +137,161 @@
             gap: 8px;
         }
 
-        /* Accomplishments */
-        .accomplishment-item {
+        /* Priority Status */
+        .priority-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .priority-status.completed {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .priority-status.partial {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .priority-status.incomplete {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .priority-text {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .priority-text.completed { color: #22c55e; }
+        .priority-text.partial { color: #f59e0b; }
+        .priority-text.incomplete { color: #ef4444; }
+
+        .priority-count {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* Task Lists */
+        .task-item {
             background: #111111;
             border: 1px solid #1a1a1a;
             border-radius: 8px;
             padding: 16px;
             margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
         }
 
-        .accomplishment-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #4ade80;
-            margin-bottom: 4px;
-        }
-
-        .accomplishment-label {
-            color: #9ca3af;
-            font-size: 14px;
-        }
-
-        .priority-list {
-            margin-top: 12px;
-        }
-
-        .priority-item {
+        .task-checkbox {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 0;
-            color: #fbbf24;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .case-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #1a1a1a;
-        }
-
-        .case-item:last-child {
-            border-bottom: none;
-        }
-
-        .case-name {
+        .task-checkbox.checked {
+            background: #4ade80;
+            border-color: #4ade80;
             color: #ffffff;
         }
 
-        .case-time {
-            color: #60a5fa;
-            font-weight: 600;
+        .task-content {
+            flex: 1;
+            min-width: 0;
         }
 
-        /* Time Analysis */
-        .time-comparison {
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .task-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .task-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .badge-client { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .badge-case { background: rgba(236, 72, 153, 0.1); color: #f472b6; }
+        .badge-priority { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .badge-type { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
+
+        /* Editable Date Badge */
+        .badge-date {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .badge-date:hover {
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .badge-date.tomorrow {
+            background: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+
+        .badge-date.overdue {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Date Picker Dropdown */
+        .date-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 8px 0;
+            min-width: 120px;
+            z-index: 100;
+            display: none;
+        }
+
+        .date-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #ffffff;
+            transition: background 0.2s ease;
+        }
+
+        .date-option:hover {
+            background: #2a2a2a;
+        }
+
+        /* Time Summary */
+        .time-summary {
             background: #111111;
             border: 1px solid #1a1a1a;
             border-radius: 8px;
@@ -283,123 +316,110 @@
 
         .time-value {
             font-weight: 600;
+            color: #ffffff;
         }
 
-        .time-value.good {
-            color: #4ade80;
-        }
+        .time-value.success { color: #4ade80; }
+        .time-value.warning { color: #fbbf24; }
 
-        .time-value.warning {
-            color: #fbbf24;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #1a1a1a;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 12px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: #3b82f6;
-            transition: width 0.3s ease;
-        }
-
-        /* Tomorrow Prep */
-        .rollover-tasks {
-            margin-bottom: 20px;
-        }
-
-        .rollover-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            background: #111111;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .rollover-checkbox {
-            width: 16px;
-            height: 16px;
-            background: none;
-            border: 1px solid #4a5568;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .rollover-checkbox.checked {
-            background: #4ade80;
-            border-color: #4ade80;
-        }
-
-        .schedule-preview {
+        /* Priority Selection */
+        .priority-selection {
             background: #111111;
             border: 1px solid #1a1a1a;
             border-radius: 8px;
             padding: 16px;
-            margin: 16px 0;
+            margin-bottom: 16px;
         }
 
-        .schedule-item {
+        .priority-instruction {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .tomorrow-task {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #1a1a1a;
+            gap: 12px;
+            padding: 12px;
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
         }
 
-        .schedule-item:last-child {
-            border-bottom: none;
+        .tomorrow-task:hover {
+            border-color: #fbbf24;
         }
 
-        .schedule-time {
-            color: #3b82f6;
-            font-weight: 600;
+        .tomorrow-task.priority {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.05);
         }
 
-        .deadline-item {
+        .priority-star {
+            width: 24px;
+            height: 24px;
+            background: none;
+            border: 1px solid #6b7280;
+            border-radius: 4px;
+            color: transparent;
+            cursor: pointer;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
-            color: #fbbf24;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
-        .deadline-urgent {
-            color: #ef4444;
+        .priority-star.active {
+            background: #fbbf24;
+            border-color: #fbbf24;
+            color: #000000;
         }
 
-        /* Reflection */
-        .reflection-section {
-            margin-bottom: 20px;
+        .task-info {
+            flex: 1;
+        }
+
+        .task-duration {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* Reflection Section */
+        .reflection-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
 
         .rating-container {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 12px 0;
         }
 
         .rating-bar {
-            flex: 1;
+            width: 200px;
             height: 20px;
             background: #1a1a1a;
             border-radius: 10px;
             overflow: hidden;
             position: relative;
+            cursor: pointer;
         }
 
         .rating-fill {
             height: 100%;
             background: linear-gradient(to right, #ef4444, #fbbf24, #4ade80);
             border-radius: 10px;
+            transition: width 0.3s ease;
         }
 
         .rating-value {
@@ -426,151 +446,13 @@
             border-color: #8b5cf6;
         }
 
-        .reflection-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn.primary {
-            background: #8b5cf6;
-            color: #ffffff;
-        }
-
-        .btn.secondary {
-            background: #374151;
-            color: #9ca3af;
-        }
-
-        .btn:hover {
-            opacity: 0.8;
-        }
-
-        /* Tomorrow Preview - Full Width */
-        .tomorrow-section {
-            background-color: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .tomorrow-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .tomorrow-weather {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: #60a5fa;
-        }
-
-        .priority-selector {
-            background: #111111;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .tomorrow-tasks {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 12px;
-            margin-top: 16px;
-        }
-
-        .tomorrow-task {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: #111111;
-            border: 1px solid #1a1a1a;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .tomorrow-task:hover {
-            border-color: #fbbf24;
-        }
-
-        .tomorrow-task.priority {
-            border-color: #fbbf24;
-            background: rgba(251, 191, 36, 0.05);
-        }
-
-        .priority-star {
-            width: 24px;
-            height: 24px;
-            background: none;
-            border: 1px solid #6b7280;
-            border-radius: 4px;
-            color: transparent;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            transition: all 0.2s ease;
-        }
-
-        .priority-star.active {
-            background: #fbbf24;
-            border-color: #fbbf24;
-            color: #000000;
-        }
-
-        .task-info {
-            flex: 1;
-        }
-
-        .task-title {
-            color: #ffffff;
-            margin-bottom: 4px;
-        }
-
-        .task-duration {
-            color: #9ca3af;
-            font-size: 12px;
-        }
-
-        /* Final Actions */
-        .final-actions {
-            background-color: #0a0a0a;
-            border: 1px solid #1a1a1a;
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-        }
-
-        .final-actions h3 {
-            color: #ffffff;
-            margin-bottom: 20px;
-            font-size: 18px;
-        }
-
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .action-btn {
@@ -598,53 +480,124 @@
             opacity: 0.8;
         }
 
-        .hidden {
-            display: none;
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: #6b7280;
         }
 
-        /* Date Toggle Styles */
-        .date-toggle-btn {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: none;
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        /* Calendar Picker */
+        .calendar-picker {
+            position: fixed;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 16px;
+            min-width: 280px;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-nav {
             background: none;
+            border: none;
             color: #9ca3af;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 4px;
             transition: all 0.2s ease;
         }
 
-        .date-toggle-btn.active {
+        .calendar-nav:hover {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+
+        .calendar-month-year {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .calendar-weekday {
+            width: 32px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .calendar-day {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+
+        .calendar-day.today {
             background: #8b5cf6;
             color: #ffffff;
         }
 
-        .date-toggle-btn:not(.active):hover {
-            color: #ffffff;
-            background: #2a2a2a;
+        .calendar-day.selected {
+            background: #fbbf24;
+            color: #000000;
         }
 
-        /* Task Badges */
-        .task-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 6px;
+        .calendar-day.other-month {
+            color: #4b5563;
         }
 
-        .task-badge {
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: 500;
+        /* Full width bottom section */
+        .full-width-section {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
         }
-
-        .badge-client { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
-        .badge-case { background: rgba(236, 72, 153, 0.1); color: #f472b6; }
-        .badge-date { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
-        .badge-priority { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
-        .badge-type { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
     </style>
 </head>
 <body>
@@ -662,322 +615,124 @@
 
         <!-- Date and Header Info -->
         <div class="end-of-day-header">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 16px;">
-                <div class="date-title" id="currentDate">🌙 End of Day Review</div>
-                <div class="date-toggle" style="display: flex; gap: 4px; background: #1a1a1a; border-radius: 8px; padding: 4px;">
-                    <button class="date-toggle-btn active" id="todayBtn" onclick="switchToToday()">Today</button>
-                    <button class="date-toggle-btn" id="yesterdayBtn" onclick="switchToYesterday()">Yesterday</button>
-                </div>
-            </div>
+            <div class="date-title" id="currentDate"></div>
             <div class="header-info">
                 <div class="info-item">
                     <span>⏰</span>
-                    <span id="currentTime">6:47 PM</span>
-                </div>
-                <div class="info-item">
-                    <span>🌤️</span>
-                    <span id="weatherInfo">68°F Clear</span>
+                    <span id="currentTime"></span>
                 </div>
                 <div class="info-item">
                     <span>⏱️</span>
                     <span id="totalLoggedTime">0m Total Logged</span>
                 </div>
+                <div class="info-item">
+                    <span>📊</span>
+                    <span id="dayProgress">Day Progress</span>
+                </div>
             </div>
         </div>
 
-        <!-- Active Timer Alert -->
-        <div class="timer-alert hidden" id="timerAlert">
-            <h3>
-                <span>⚠️</span>
-                ACTIVE TIMER DETECTED
-            </h3>
-            <div class="timer-details" id="timerDetails">
-                <div><strong>Currently running:</strong> <span id="runningTaskName">Research for Jones case</span></div>
-                <div><strong>Time logged so far:</strong> <span id="runningTaskTime">2h 34m</span></div>
-                <div><strong>Task:</strong> <span id="runningTaskInfo">Johnson v. Smith case</span></div>
-            </div>
-            <div style="color: #9ca3af; font-size: 14px; font-style: italic; margin: 8px 0;">
-                💡 Tip: Stopping your timer helps ensure accurate daily metrics
-            </div>
-            <div class="timer-actions">
-                <button class="timer-btn primary" onclick="stopAndLogTimer()">Stop Timer & Log Time</button>
-                <button class="timer-btn secondary" onclick="keepTimerRunning()">Keep Running</button>
-                <button class="timer-btn danger" onclick="stopWithoutLogging()">Stop Without Logging</button>
-            </div>
-        </div>
-
-        <!-- Main Grid: Accomplishments & Time Analysis -->
+        <!-- Main Grid: Accountability & Tomorrow Setup -->
         <div class="main-grid">
-            <!-- Today's Accomplishments -->
+            <!-- Today's Accountability -->
             <div class="card">
-                <h2 class="card-title">📈 Today's Accomplishments</h2>
+                <h2 class="card-title">📈 Today's Accountability</h2>
                 
-                <div class="accomplishment-item">
-                    <div class="accomplishment-value" id="eventsToday">0</div>
-                    <div class="accomplishment-label">Today's Events</div>
-                    <div id="eventsList">
-                        <div class="case-item">
-                            <span class="case-name" style="color: #6b7280;">No events scheduled today</span>
-                            <span class="case-time">--</span>
-                        </div>
-                    </div>
+                <!-- Priority Status -->
+                <div id="priorityStatusCard" class="priority-status">
+                    <div class="priority-text">Priorities Complete</div>
+                    <div class="priority-count" id="priorityCount">0/3</div>
                 </div>
 
-                <div class="accomplishment-item">
-                    <div class="accomplishment-value" id="priorityCompletion">3/3</div>
-                    <div class="accomplishment-label">Daily Priorities Finished</div>
-                    <div class="priority-list">
-                        <div class="priority-item">
-                            <span>★</span>
-                            <span>Contract review</span>
-                        </div>
-                        <div class="priority-item">
-                            <span>★</span>
-                            <span>Client deposition prep</span>
-                        </div>
-                        <div class="priority-item">
-                            <span>★</span>
-                            <span>Filing deadlines</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accomplishment-item">
-                    <div class="accomplishment-value" id="taskCompletion">8 of 12</div>
-                    <div class="accomplishment-label">Tasks Completed (67% completion rate)</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 67%"></div>
-                    </div>
-                </div>
-
-                <div class="accomplishment-item">
-                    <div class="accomplishment-value" id="casesWorked">0</div>
-                    <div class="accomplishment-label">Cases Worked On</div>
-                    <div id="casesList">
-                        <div class="case-item">
-                            <span class="case-name" style="color: #6b7280;">No case work logged today</span>
-                            <span class="case-time">0m</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Time Analysis -->
-            <div class="card">
-                <h2 class="card-title">⏱️ Time Analysis</h2>
-                
-                <div class="time-comparison">
-                    <h3 style="color: #ffffff; margin-bottom: 12px;">📊 Projected vs Actual</h3>
+                <!-- Time Summary -->
+                <div class="time-summary">
                     <div class="time-row">
-                        <span class="time-label">Projected:</span>
-                        <span class="time-value" style="color: #6b7280;">0m</span>
+                        <span class="time-label">Tasks Completed:</span>
+                        <span class="time-value" id="tasksCompleted">0 of 0</span>
                     </div>
                     <div class="time-row">
-                        <span class="time-label">Actual:</span>
-                        <span class="time-value" style="color: #6b7280;">0m</span>
+                        <span class="time-label">Events Attended:</span>
+                        <span class="time-value" id="eventsAttended">0 of 0</span>
                     </div>
                     <div class="time-row">
-                        <span class="time-label">Variance:</span>
-                        <span class="time-value" style="color: #6b7280;">Add time estimates and use timers to see analysis</span>
-                    </div>
-                </div>
-
-                <div class="time-comparison">
-                    <h3 style="color: #ffffff; margin-bottom: 12px;">🎯 Time Breakdown</h3>
-                    <div class="time-row">
-                        <span class="time-label">Billable:</span>
-                        <span class="time-value" style="color: #6b7280;">No time logged yet</span>
+                        <span class="time-label">Deadlines Met:</span>
+                        <span class="time-value" id="deadlinesMet">0 of 0</span>
                     </div>
                     <div class="time-row">
-                        <span class="time-label">Admin:</span>
-                        <span class="time-value" style="color: #6b7280;">No time logged yet</span>
-                    </div>
-                    <div class="time-row">
-                        <span class="time-label">Other:</span>
-                        <span class="time-value" style="color: #6b7280;">Start using timers to see breakdown</span>
+                        <span class="time-label">Time Logged:</span>
+                        <span class="time-value" id="timeLogged">0m</span>
                     </div>
                 </div>
 
-                <div class="accomplishment-item">
-                    <div class="accomplishment-value" style="color: #6b7280;">Undetermined</div>
-                    <div class="accomplishment-label">🔥 Peak Productivity Hours</div>
-                    <div style="font-size: 12px; color: #6b7280; margin-top: 4px;">Track more timer sessions to identify patterns</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tomorrow's Preparation & Daily Reflection Grid -->
-        <div class="main-grid">
-            <!-- Tomorrow's Preparation -->
-            <div class="card">
-                <h2 class="card-title">🔄 Tomorrow's Preparation</h2>
-                
-                <div class="rollover-tasks">
-                    <h3 style="color: #ffffff; margin-bottom: 12px;">📋 Rolling Over (4 tasks)</h3>
-                    <div class="rollover-item">
-                        <input type="checkbox" class="rollover-checkbox">
-                        <span>Motion filing</span>
-                    </div>
-                    <div class="rollover-item">
-                        <input type="checkbox" class="rollover-checkbox">
-                        <span>Client follow-up calls</span>
-                    </div>
-                    <div class="rollover-item">
-                        <input type="checkbox" class="rollover-checkbox">
-                        <span>Research for Jones case</span>
-                    </div>
-                    <div class="rollover-item">
-                        <input type="checkbox" class="rollover-checkbox">
-                        <span>Update case notes</span>
-                    </div>
-                </div>
-
-                <div class="schedule-preview">
-                    <h3 style="color: #ffffff; margin-bottom: 12px;">📅 Tomorrow's Schedule</h3>
-                    <div class="schedule-item">
-                        <span>Client meeting</span>
-                        <span class="schedule-time">9:00 AM</span>
-                    </div>
-                    <div class="schedule-item">
-                        <span>Court hearing</span>
-                        <span class="schedule-time">11:00 AM</span>
-                    </div>
-                    <div class="schedule-item">
-                        <span>Team meeting</span>
-                        <span class="schedule-time">2:00 PM</span>
-                    </div>
-                    <div class="schedule-item">
-                        <span>Free time</span>
-                        <span class="schedule-time" style="color: #4ade80;">4:00 PM</span>
-                    </div>
-                </div>
-
+                <!-- Incomplete Tasks -->
                 <div>
-                    <h3 style="color: #ffffff; margin-bottom: 12px;">⚠️ Upcoming Deadlines</h3>
-                    <div class="deadline-item deadline-urgent">
-                        <span>Motion due</span>
-                        <span>2 days (Mon)</span>
-                    </div>
-                    <div class="deadline-item">
-                        <span>Discovery deadline</span>
-                        <span>4 days (Wed)</span>
-                    </div>
+                    <h3 style="color: #ffffff; margin-bottom: 12px;" id="incompleteTasksTitle">Incomplete Tasks</h3>
+                    <div id="incompleteTasks"></div>
                 </div>
             </div>
 
-            <!-- Daily Reflection -->
+            <!-- Tomorrow Setup -->
             <div class="card">
-                <h2 class="card-title">💭 Daily Reflection</h2>
+                <h2 class="card-title">🔄 Tomorrow Setup</h2>
                 
-                <div class="reflection-section">
-                    <div class="time-row">
-                        <span>Productivity Rating:</span>
+                <!-- Rollover Tasks -->
+                <div>
+                    <h3 style="color: #ffffff; margin-bottom: 12px;" id="rolloverTitle">Reschedule Tasks</h3>
+                    <div style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">
+                        ✅ Check tasks to reschedule • 📅 Click date to change when
+                    </div>
+                    <div id="rolloverTasks"></div>
+                </div>
+
+                <!-- Tomorrow Priorities -->
+                <div class="priority-selection">
+                    <h3 style="color: #ffffff; margin-bottom: 8px;" id="tomorrowPriorityTitle">Set Tomorrow's 3 Priorities</h3>
+                    <div class="priority-instruction">⭐ Click stars to select your top 3 focus items for tomorrow</div>
+                    <div id="tomorrowTaskList"></div>
+                </div>
+
+                <!-- Tomorrow's Preview -->
+                <div style="margin-top: 20px;">
+                    <h3 style="color: #ffffff; margin-bottom: 12px;" id="tomorrowPreviewTitle">Tomorrow's Schedule</h3>
+                    <div id="tomorrowPreview"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reflection - Full Width -->
+        <div class="full-width-section">
+            <h2 class="card-title">💭 Quick Close</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: center;">
+                <!-- Rating -->
+                <div>
+                    <div class="reflection-row">
+                        <span style="color: #ffffff;">How was today?</span>
                         <span class="rating-value" id="productivityRating">Rate your day</span>
                     </div>
                     <div class="rating-container">
                         <div class="rating-bar" onclick="setProductivityRating(event)">
                             <div class="rating-fill" id="productivityFill" style="width: 0%"></div>
                         </div>
-                        <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">
-                            Click on the bar above to rate your productivity (1-10)
-                        </div>
                     </div>
                 </div>
 
-                <div class="reflection-section">
-                    <h4 style="color: #ffffff; margin-bottom: 8px;">💡 Today's Challenge:</h4>
-                    <textarea class="reflection-input" placeholder="What was your biggest challenge today?">Interruptions during focus time</textarea>
+                <!-- Key Insight -->
+                <div>
+                    <label style="color: #ffffff; display: block; margin-bottom: 8px;">Key insight or takeaway:</label>
+                    <textarea class="reflection-input" id="keyInsight" placeholder="What did you learn today?" style="height: 80px;"></textarea>
                 </div>
 
-                <div class="reflection-section">
-                    <h4 style="color: #ffffff; margin-bottom: 8px;">🎯 Key Insight:</h4>
-                    <textarea class="reflection-input" placeholder="What did you learn or realize today?">Block scheduling worked well for deep work sessions</textarea>
+                <!-- Action Buttons -->
+                <div class="action-buttons" style="margin-top: 0;">
+                    <button class="action-btn primary" onclick="saveAndCloseDay()">Save & Close Day</button>
                 </div>
-
-                <div class="reflection-section">
-                    <h4 style="color: #ffffff; margin-bottom: 8px;">⚡ Tomorrow's Focus:</h4>
-                    <textarea class="reflection-input" placeholder="What will you prioritize differently tomorrow?">Start with most complex task first</textarea>
-                </div>
-
-                <div class="reflection-actions">
-                    <button class="btn primary" onclick="saveReflection()">Save Reflection</button>
-                    <button class="btn secondary" onclick="skipReflection()">Skip</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tomorrow's Preview - Full Width -->
-        <div class="tomorrow-section">
-            <div class="card-title">🌅 Tomorrow's Preview</div>
-            
-            <div class="tomorrow-header">
-                <div class="tomorrow-weather">
-                    <span>🌤️ Weather: 71°F, Partly Cloudy</span>
-                    <span style="color: #9ca3af;">• Light jacket for court</span>
-                </div>
-                <div style="color: #9ca3af;">
-                    <span>⏰ Suggested Wake: 7:30 AM (First meeting at 9:00 AM)</span>
-                </div>
-            </div>
-
-            <div class="priority-selector">
-                <h3 style="color: #ffffff; margin-bottom: 16px;">🎯 Set Tomorrow's 3 Priorities:</h3>
-                <div style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">
-                    ⭐ Click the stars next to tasks to set your priorities for tomorrow
-                </div>
-                
-                <div class="tomorrow-tasks" id="tomorrowTasks">
-                    <div class="tomorrow-task" onclick="toggleTomorrowPriority(this)">
-                        <button class="priority-star">☆</button>
-                        <div class="task-info">
-                            <div class="task-title">Motion filing</div>
-                            <div class="task-duration">2h</div>
-                        </div>
-                    </div>
-                    <div class="tomorrow-task" onclick="toggleTomorrowPriority(this)">
-                        <button class="priority-star">☆</button>
-                        <div class="task-info">
-                            <div class="task-title">Client follow-up calls</div>
-                            <div class="task-duration">45m</div>
-                        </div>
-                    </div>
-                    <div class="tomorrow-task" onclick="toggleTomorrowPriority(this)">
-                        <button class="priority-star">☆</button>
-                        <div class="task-info">
-                            <div class="task-title">Research for Jones case</div>
-                            <div class="task-duration">1h 30m</div>
-                        </div>
-                    </div>
-                    <div class="tomorrow-task" onclick="toggleTomorrowPriority(this)">
-                        <button class="priority-star">☆</button>
-                        <div class="task-info">
-                            <div class="task-title">Update case notes</div>
-                            <div class="task-duration">30m</div>
-                        </div>
-                    </div>
-                    <div class="tomorrow-task" onclick="toggleTomorrowPriority(this)">
-                        <button class="priority-star">☆</button>
-                        <div class="task-info">
-                            <div class="task-title">Prepare court arguments</div>
-                            <div class="task-duration">3h</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Final Actions -->
-        <div class="final-actions">
-            <h3>Ready to close your day?</h3>
-            <div class="action-buttons">
-                <button class="action-btn primary" onclick="saveAndCloseDay()">Save & Close Day</button>
-                <button class="action-btn secondary" onclick="viewDetailedReports()">View Detailed Reports</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Storage and utility classes from the main app
+        // Storage and utility classes
         class TaskStorage {
             static get() {
                 const data = localStorage.getItem('legalTasks');
@@ -998,669 +753,48 @@
             }
         }
 
-        // End of Day UI Manager
-        class EndOfDayUI {
-            constructor() {
-                this.init();
-                this.checkForRunningTimer();
-                this.calculateDayMetrics();
-            }
-
-            init() {
-                // Initialize date and time
-                const now = new Date();
-                document.getElementById('currentDate').textContent = 
-                    `🌙 End of Day Review - ${now.toLocaleDateString('en-US', { 
-                        weekday: 'long',
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric' 
-                    })}`;
+        // Date utilities
+        class DateUtils {
+            static formatDateForDisplay(dateString) {
+                if (!dateString) return '';
                 
-                document.getElementById('currentTime').textContent = 
-                    now.toLocaleTimeString('en-US', { 
-                        hour: 'numeric', 
-                        minute: '2-digit',
-                        hour12: true 
-                    });
-            }
-
-            checkForRunningTimer() {
-                // Check for running timers in localStorage or sessionStorage
-                const runningTimer = localStorage.getItem('activeTimer');
+                const today = new Date();
+                const todayStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
                 
-                if (runningTimer) {
-                    const timerData = JSON.parse(runningTimer);
-                    const timerAlert = document.getElementById('timerAlert');
-                    
-                    // Show the timer alert
-                    timerAlert.classList.remove('hidden');
-                    
-                    // Update timer details
-                    document.getElementById('runningTaskName').textContent = timerData.taskName || 'Unknown Task';
-                    document.getElementById('runningTaskTime').textContent = this.formatDuration(timerData.elapsed || 0);
-                    document.getElementById('runningTaskInfo').textContent = timerData.context || 'No additional details';
-                }
-            }
-
-            calculateDayMetrics() {
-                const data = TaskStorage.get();
-                const viewDate = currentViewDate.toISOString().split('T')[0];
-                const today = viewDate; // Use the selected view date
-                
-                // Debug logging to see what data we have
-                console.log('End of Day Debug:', {
-                    currentViewDate: currentViewDate.toDateString(),
-                    viewDate: viewDate,
-                    totalTasks: data.tasks.length,
-                    taskSample: data.tasks.slice(0, 3).map(t => ({ 
-                        title: t.title, 
-                        doDate: t.doDate, 
-                        completed: t.completed,
-                        completedDate: t.completedDate,
-                        type: t.type
-                    }))
-                });
-                
-                // Use the selected view date for all formatting
-                const todayFormats = [
-                    today,
-                    currentViewDate.toLocaleDateString(),
-                    currentViewDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
-                ];
-                
-                // Only add 'today' if we're actually viewing today
-                const actualToday = new Date();
-                if (currentViewDate.toDateString() === actualToday.toDateString()) {
-                    todayFormats.push('today');
-                }
-                
-                // Calculate tasks completed today (EXCLUDING events - only actual tasks)
-                const completedToday = data.tasks.filter(task => 
-                    task.completed && 
-                    task.completedDate && 
-                    task.completedDate.startsWith(today) &&
-                    task.type !== 'event' // Exclude events from task completion
-                ).length;
-                
-                // Calculate total tasks that were due today or completed today (EXCLUDING events)
-                const totalTasks = data.tasks.filter(task => {
-                    // Skip events entirely
-                    if (task.type === 'event') return false;
-                    
-                    // Include if completed today
-                    if (task.completed && task.completedDate && task.completedDate.startsWith(today)) {
-                        return true;
-                    }
-                    // Include if due today and not completed
-                    if (!task.completed && task.doDate && this.isToday(task.doDate)) {
-                        return true;
-                    }
-                    return false;
-                }).length;
-
-                // Update task completion display (this will be updated later in updateAccomplishments)
-                const completionRate = totalTasks > 0 ? Math.round((completedToday / totalTasks) * 100) : 0;
-                // Note: We'll update the display in updateAccomplishments to ensure proper order
-
-                // Calculate total time logged (all time from timers)
-                const totalSeconds = data.tasks
-                    .filter(task => task.timerElapsed && task.timerElapsed > 0)
-                    .reduce((total, task) => total + (task.timerElapsed || 0), 0);
-                
-                document.getElementById('totalLoggedTime').textContent = 
-                    `${this.formatDuration(Math.floor(totalSeconds / 60))} Total Logged`;
-
-                // Update all accomplishment sections with real data
-                this.updateAccomplishments(data, today, todayFormats);
-                this.updateTimeAnalysis(data, today);
-                this.updateTomorrowPrep(data);
-            }
-
-            updateAccomplishments(data, today, todayFormats) {
-                // Update priority completion - use the same critical/important priority system as main app
-                const priorityTasks = data.tasks.filter(task => 
-                    task.priority === 'critical' || task.priority === 'important'
-                );
-                const completedPriorities = priorityTasks.filter(task => 
-                    task.completed && task.completedDate && task.completedDate.startsWith(today)
-                );
-                
-                document.getElementById('priorityCompletion').textContent = 
-                    `${completedPriorities.length}/${priorityTasks.length}`;
-                
-                // Update priority list with real data
-                const priorityListContainer = document.querySelector('.priority-list');
-                if (priorityTasks.length > 0) {
-                    priorityListContainer.innerHTML = priorityTasks
-                        .sort((a, b) => {
-                            const priorityOrder = { critical: 0, important: 1 };
-                            return priorityOrder[a.priority] - priorityOrder[b.priority];
-                        })
-                        .slice(0, 5) // Show max 5 priorities
-                        .map(task => {
-                            let icon = '⚠️';
-                            let style = '';
-                            if (task.completed) {
-                                icon = '✅';
-                            } else if (task.type === 'deadline') {
-                                icon = '⏰';
-                                style = 'color: #ef4444; font-weight: 600;'; // Red for deadlines
-                            } else if (task.priority === 'critical') {
-                                icon = '🔥';
-                            }
-                            
-                            return `
-                                <div class="priority-item" style="${style}">
-                                    <span>${icon}</span>
-                                    <div>
-                                        <span>${task.title || 'Untitled task'}${task.type === 'deadline' ? ' (DEADLINE)' : ''}</span>
-                                        <div class="task-badges">
-                                            ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
-                                            ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
-                                            ${task.doDate ? `<span class="task-badge badge-date">📅 ${this.formatDateForDisplay(task.doDate)}</span>` : ''}
-                                            <span class="task-badge badge-priority">!${task.priority}</span>
-                                            ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-                } else {
-                    priorityListContainer.innerHTML = `
-                        <div class="priority-item" style="color: #6b7280;">
-                            <span>—</span>
-                            <span>No critical or important tasks today</span>
-                        </div>
-                    `;
-                }
-
-                // Update cases worked on - only cases with actual timer data
-                const casesWorked = {};
-                data.tasks
-                    .filter(task => task.case && task.timerElapsed && task.timerElapsed > 0)
-                    .forEach(task => {
-                        if (!casesWorked[task.case]) {
-                            casesWorked[task.case] = 0;
-                        }
-                        casesWorked[task.case] += task.timerElapsed || 0;
-                    });
-
-                const casesArray = Object.entries(casesWorked);
-                document.getElementById('casesWorked').textContent = casesArray.length.toString();
-                
-                const casesListContainer = document.getElementById('casesList');
-                if (casesArray.length > 0) {
-                    casesListContainer.innerHTML = casesArray
-                        .sort((a, b) => b[1] - a[1]) // Sort by time descending
-                        .slice(0, 5) // Show top 5 cases
-                        .map(([caseName, totalSeconds]) => `
-                            <div class="case-item">
-                                <span class="case-name">${caseName}</span>
-                                <span class="case-time">${this.formatDuration(Math.floor(totalSeconds / 60))}</span>
-                            </div>
-                        `).join('');
-                } else {
-                    casesListContainer.innerHTML = `
-                        <div class="case-item">
-                            <span class="case-name" style="color: #6b7280;">No case work logged today</span>
-                            <span class="case-time">0m</span>
-                        </div>
-                    `;
-                }
-
-                // Update today's events - ALL events scheduled for today (completed & incomplete)
-                const todaysEvents = data.tasks.filter(task => 
-                    task.type === 'event' && 
-                    task.doDate &&
-                    this.isToday(task.doDate)
-                ).sort((a, b) => {
-                    const aTime = this.parseTimeToMinutes(this.extractTime(a.doDate));
-                    const bTime = this.parseTimeToMinutes(this.extractTime(b.doDate));
-                    return aTime - bTime;
-                });
-
-                const completedEvents = todaysEvents.filter(event => event.completed).length;
-                const totalEvents = todaysEvents.length;
-                
-                document.getElementById('eventsToday').textContent = `${completedEvents}/${totalEvents}`;
-                
-                const eventsListContainer = document.getElementById('eventsList');
-                if (todaysEvents.length > 0) {
-                    eventsListContainer.innerHTML = todaysEvents
-                        .slice(0, 5) // Show max 5 events
-                        .map(event => `
-                            <div class="case-item">
-                                <span class="case-name" style="${event.completed ? 'color: #4ade80;' : 'color: #ffffff;'}">${event.completed ? '✅' : '⏰'} ${event.title || 'Untitled Event'}</span>
-                                <span class="case-time" style="color: #60a5fa;">${this.extractTime(event.doDate)}</span>
-                            </div>
-                        `).join('');
-                } else {
-                    eventsListContainer.innerHTML = `
-                        <div class="case-item">
-                            <span class="case-name" style="color: #6b7280;">No events scheduled today</span>
-                            <span class="case-time">--</span>
-                        </div>
-                    `;
-                }
-
-                // Update tasks completed today (EXCLUDING events - only actual tasks)
-                const completedTasksToday = data.tasks.filter(task => 
-                    task.completed && 
-                    task.completedDate && 
-                    task.completedDate.startsWith(today) &&
-                    task.type !== 'event' // Exclude events from task completion
-                ).length;
-                
-                // Calculate total tasks that were due today or completed today (EXCLUDING events)
-                const totalTasksToday = data.tasks.filter(task => {
-                    // Skip events entirely
-                    if (task.type === 'event') return false;
-                    
-                    // Include if completed today
-                    if (task.completed && task.completedDate && task.completedDate.startsWith(today)) {
-                        return true;
-                    }
-                    // Include if due today and not completed
-                    if (!task.completed && task.doDate && this.isToday(task.doDate)) {
-                        return true;
-                    }
-                    return false;
-                }).length;
-
-                // Update task completion display
-                const taskCompletionRate = totalTasksToday > 0 ? Math.round((completedTasksToday / totalTasksToday) * 100) : 0;
-                document.getElementById('taskCompletion').textContent = `${completedTasksToday} of ${totalTasksToday}`;
-                
-                // Update the label and progress bar for tasks (find the correct elements in the reordered structure)
-                const taskCompletionSection = document.querySelector('#taskCompletion').closest('.accomplishment-item');
-                const taskLabel = taskCompletionSection.querySelector('.accomplishment-label');
-                const taskProgressBar = taskCompletionSection.querySelector('.progress-fill');
-                
-                if (taskLabel) {
-                    taskLabel.textContent = `Tasks Completed (${taskCompletionRate}% completion rate)`;
-                }
-                if (taskProgressBar) {
-                    taskProgressBar.style.width = `${taskCompletionRate}%`;
-                }
-            }
-
-            updateTimeAnalysis(data, today) {
-                // Calculate actual vs projected time
-                const tasksWithProjectedTime = data.tasks.filter(task => 
-                    this.isToday(task.doDate) || (task.completed && task.completedDate && task.completedDate.startsWith(today))
-                );
-                
-                const projectedMinutes = tasksWithProjectedTime.reduce((total, task) => {
-                    return total + this.parseHoursToMinutes(task.hours);
-                }, 0);
-
-                const actualMinutes = Math.floor(data.tasks.reduce((total, task) => {
-                    return total + (task.timerElapsed || 0);
-                }, 0) / 60);
-
-                // Update projected vs actual display
-                const projectedElement = document.querySelector('.time-comparison .time-row:nth-child(1) .time-value');
-                const actualElement = document.querySelector('.time-comparison .time-row:nth-child(2) .time-value');
-                const varianceElement = document.querySelector('.time-comparison .time-row:nth-child(3) .time-value');
-                
-                if (projectedElement) projectedElement.textContent = this.formatDuration(projectedMinutes);
-                if (actualElement) actualElement.textContent = this.formatDuration(actualMinutes);
-                
-                if (varianceElement) {
-                    const variance = actualMinutes - projectedMinutes;
-                    const sign = variance >= 0 ? '+' : '';
-                    const accuracy = projectedMinutes > 0 ? Math.abs(variance) / projectedMinutes : 0;
-                    
-                    let message = `${sign}${this.formatDuration(Math.abs(variance))}`;
-                    if (accuracy < 0.15) {
-                        message += ' (Great estimate!)';
-                        varianceElement.className = 'time-value good';
-                    } else if (accuracy < 0.3) {
-                        message += ' (Good estimate)';
-                        varianceElement.className = 'time-value warning';
-                    } else {
-                        message += ' (Needs adjustment)';
-                        varianceElement.className = 'time-value';
-                    }
-                    
-                    varianceElement.textContent = message;
-                }
-
-                // Calculate time breakdown based on actual task data
-                const tasksWithTime = data.tasks.filter(task => task.timerElapsed && task.timerElapsed > 0);
-                const totalTime = tasksWithTime.reduce((total, task) => total + (task.timerElapsed || 0), 0);
-                
-                if (totalTime > 0 && tasksWithTime.length > 0) {
-                    // Billable: tasks with client or case data
-                    const billableTasks = tasksWithTime.filter(task => task.client || task.case);
-                    const billableTime = billableTasks.reduce((total, task) => total + (task.timerElapsed || 0), 0);
-                    
-                    // Admin/overhead: tasks without client/case (non-billable)
-                    const nonBillableTasks = tasksWithTime.filter(task => !task.client && !task.case);
-                    const nonBillableTime = nonBillableTasks.reduce((total, task) => total + (task.timerElapsed || 0), 0);
-                    
-                    const billablePercent = Math.round((billableTime / totalTime) * 100);
-                    const nonBillablePercent = Math.round((nonBillableTime / totalTime) * 100);
-                    
-                    const billableEl = document.querySelector('.time-comparison:nth-child(2) .time-row:nth-child(1) .time-value');
-                    const adminEl = document.querySelector('.time-comparison:nth-child(2) .time-row:nth-child(2) .time-value');
-                    const learningEl = document.querySelector('.time-comparison:nth-child(2) .time-row:nth-child(3) .time-value');
-                    
-                    if (billableEl) {
-                        billableEl.textContent = billableTime > 0 ? 
-                            `${this.formatDuration(Math.floor(billableTime / 60))} (${billablePercent}%)` : 
-                            '0m (0%)';
-                    }
-                    if (adminEl) {
-                        adminEl.textContent = nonBillableTime > 0 ? 
-                            `${this.formatDuration(Math.floor(nonBillableTime / 60))} (${nonBillablePercent}%)` : 
-                            '0m (0%)';
-                    }
-                    if (learningEl) {
-                        // Show breakdown summary instead of "learning time"
-                        learningEl.textContent = `${billableTasks.length} billable, ${nonBillableTasks.length} other`;
-                        learningEl.style.fontSize = '12px';
-                        learningEl.style.color = '#9ca3af';
-                    }
-                } else {
-                    // No time data available
-                    const billableEl = document.querySelector('.time-comparison:nth-child(2) .time-row:nth-child(1) .time-value');
-                    const adminEl = document.querySelector('.time-comparison:nth-child(2) .time-row:nth-child(2) .time-value');
-                    const learningEl = document.querySelector('.time-comparison:nth-child(2) .time-row:nth-child(3) .time-value');
-                    
-                    if (billableEl) billableEl.textContent = 'No time logged yet';
-                    if (adminEl) adminEl.textContent = 'No time logged yet';
-                    if (learningEl) learningEl.textContent = 'Start using timers to see breakdown';
-                }
-            }
-
-            updateTomorrowPrep(data) {
-                // Get rollover tasks (incomplete tasks that were due today or earlier)
-                const rolloverTasks = data.tasks.filter(task => 
-                    !task.completed && 
-                    (this.isToday(task.doDate) || this.isOverdue(task.doDate))
-                );
-
-                // Update rollover tasks section
-                const rolloverContainer = document.querySelector('.rollover-tasks');
-                const rolloverHeader = rolloverContainer.querySelector('h3');
-                rolloverHeader.textContent = `📋 Rolling Over (${rolloverTasks.length} tasks)`;
-                
-                const rolloverList = rolloverContainer.querySelectorAll('.rollover-item');
-                rolloverList.forEach(item => item.remove());
-                
-                rolloverTasks.slice(0, 10).forEach(task => { // Show max 10 tasks
-                    const item = document.createElement('div');
-                    item.className = 'rollover-item';
-                    item.innerHTML = `
-                        <input type="checkbox" class="rollover-checkbox">
-                        <span>${task.title || 'Untitled task'}</span>
-                    `;
-                    rolloverContainer.appendChild(item);
-                });
-
-                // Get tomorrow's schedule (events due tomorrow) - use improved isTomorrow function
-                const tomorrowEvents = data.tasks.filter(task => 
-                    task.type === 'event' && 
-                    task.doDate &&
-                    this.isTomorrow(task.doDate) // Use the improved isTomorrow function
-                ).sort((a, b) => {
-                    const aTime = this.parseTimeToMinutes(this.extractTime(a.doDate));
-                    const bTime = this.parseTimeToMinutes(this.extractTime(b.doDate));
-                    return aTime - bTime;
-                });
-
-                // Update tomorrow's schedule
-                const scheduleContainer = document.querySelector('.schedule-preview');
-                const scheduleItems = scheduleContainer.querySelectorAll('.schedule-item');
-                scheduleItems.forEach(item => item.remove());
-                
-                if (tomorrowEvents.length > 0) {
-                    tomorrowEvents.forEach(event => {
-                        const item = document.createElement('div');
-                        item.className = 'schedule-item';
-                        item.innerHTML = `
-                            <span>${event.title || 'Untitled Event'}</span>
-                            <span class="schedule-time">${this.extractTime(event.doDate)}</span>
-                        `;
-                        scheduleContainer.appendChild(item);
-                    });
-                } else {
-                    const item = document.createElement('div');
-                    item.className = 'schedule-item';
-                    item.innerHTML = `
-                        <span style="color: #6b7280;">No events scheduled</span>
-                        <span class="schedule-time" style="color: #4ade80;">Free day!</span>
-                    `;
-                    scheduleContainer.appendChild(item);
-                }
-
-                // Update upcoming deadlines
-                const deadlineContainer = document.querySelector('.schedule-preview').nextElementSibling;
-                const deadlineItems = deadlineContainer.querySelectorAll('.deadline-item');
-                deadlineItems.forEach(item => item.remove());
-
-                const upcomingDeadlines = data.tasks
-                    .filter(task => !task.completed && task.type === 'deadline' && task.doDate)
-                    .map(task => {
-                        const daysUntil = this.getDaysUntilDate(task.doDate);
-                        return { ...task, daysUntil };
-                    })
-                    .filter(task => task.daysUntil >= 0 && task.daysUntil <= 7) // Next 7 days
-                    .sort((a, b) => a.daysUntil - b.daysUntil)
-                    .slice(0, 5); // Show max 5 deadlines
-
-                if (upcomingDeadlines.length > 0) {
-                    upcomingDeadlines.forEach(deadline => {
-                        const item = document.createElement('div');
-                        item.className = `deadline-item ${deadline.daysUntil <= 1 ? 'deadline-urgent' : ''}`;
-                        
-                        let timeText = '';
-                        if (deadline.daysUntil === 0) timeText = 'Today';
-                        else if (deadline.daysUntil === 1) timeText = 'Tomorrow';
-                        else timeText = `${deadline.daysUntil} days`;
-                        
-                        item.innerHTML = `
-                            <span>${deadline.title || 'Untitled Deadline'}</span>
-                            <span>${timeText}</span>
-                        `;
-                        deadlineContainer.appendChild(item);
-                    });
-                } else {
-                    const item = document.createElement('div');
-                    item.className = 'deadline-item';
-                    item.style.color = '#4ade80';
-                    item.innerHTML = `
-                        <span>No urgent deadlines</span>
-                        <span>All clear! ✨</span>
-                    `;
-                    deadlineContainer.appendChild(item);
-                }
-
-                // Update tomorrow's task list for priority selection
-                this.updateTomorrowTasks(data);
-            }
-
-            updateTomorrowTasks(data) {
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                // Get tasks for tomorrow (rollover + tomorrow-specific + high priority)
-                const tomorrowTasks = data.tasks.filter(task => 
-                    !task.completed && 
-                    task.type !== 'event' && // Exclude events, they're in schedule
-                    (this.isToday(task.doDate) || // Rollover from today
-                     this.isTomorrow(task.doDate) || // Scheduled for tomorrow
-                     task.priority === 'critical' || // Critical items
-                     task.priority === 'important') // Important items
-                ).slice(0, 10); // Limit to 10 tasks
-
-                const tasksContainer = document.getElementById('tomorrowTasks');
-                tasksContainer.innerHTML = '';
-
-                tomorrowTasks.forEach(task => {
-                    const taskElement = document.createElement('div');
-                    taskElement.className = 'tomorrow-task';
-                    taskElement.onclick = () => this.toggleTomorrowPriority(taskElement);
-                    
-                    taskElement.innerHTML = `
-                        <button class="priority-star">☆</button>
-                        <div class="task-info">
-                            <div class="task-title">${task.title || 'Untitled task'}</div>
-                            <div class="task-duration">${task.hours || '1h'}</div>
-                        </div>
-                    `;
-                    
-                    tasksContainer.appendChild(taskElement);
-                });
-
-                if (tomorrowTasks.length === 0) {
-                    tasksContainer.innerHTML = `
-                        <div style="text-align: center; padding: 20px; color: #6b7280;">
-                            <div>No tasks found for tomorrow</div>
-                            <div style="font-size: 12px; margin-top: 4px;">Add tasks in the Command Center</div>
-                        </div>
-                    `;
-                }
-            }
-
-            parseHoursToMinutes(hoursString) {
-                if (!hoursString) return 0;
-                
-                const hourMatch = hoursString.match(/([\d.]+)\s*h/);
-                if (hourMatch) {
-                    return Math.round(parseFloat(hourMatch[1]) * 60);
-                }
-                
-                const minMatch = hoursString.match(/(\\d+)\\s*m/);
-                if (minMatch) {
-                    return parseInt(minMatch[1]);
-                }
-                
-                return 0;
-            }
-
-            extractTime(dateString) {
-                if (!dateString) return '9:00 AM';
-                
-                // Match HH:MM AM/PM format
-                const timeMatch = dateString.match(/(\d{1,2}):(\d{2})\s*(am|pm)/i);
-                if (timeMatch) return timeMatch[0];
-                
-                // Match H AM/PM format (like "3 pm")
-                const hourMatch = dateString.match(/(\d{1,2})\s*(am|pm)/i);
-                if (hourMatch) {
-                    const hour = hourMatch[1];
-                    const period = hourMatch[2];
-                    return `${hour}:00 ${period}`;
-                }
-                
-                // Match HH:MM without AM/PM (assume 24-hour format)
-                const time24Match = dateString.match(/(\d{1,2}):(\d{2})/);
-                if (time24Match) {
-                    const hour = parseInt(time24Match[1]);
-                    const minute = time24Match[2];
-                    if (hour >= 12) {
-                        const displayHour = hour === 12 ? 12 : hour - 12;
-                        return `${displayHour}:${minute} PM`;
-                    } else {
-                        const displayHour = hour === 0 ? 12 : hour;
-                        return `${displayHour}:${minute} AM`;
-                    }
-                }
-                
-                return '9:00 AM';
-            }
-
-            parseTimeToMinutes(timeString) {
-                if (!timeString) return 540; // 9:00 AM default
-                
-                // Match HH:MM AM/PM or H:MM AM/PM
-                const match = timeString.match(/(\\d{1,2}):?(\\d{2})?\\s*(am|pm)?/i);
-                if (!match) return 540;
-                
-                let hours = parseInt(match[1]);
-                const minutes = parseInt(match[2] || '0');
-                const period = (match[3] || '').toLowerCase();
-                
-                // Handle AM/PM conversion
-                if (period === 'pm' && hours !== 12) {
-                    hours += 12;
-                } else if (period === 'am' && hours === 12) {
-                    hours = 0;
-                }
-                
-                return hours * 60 + minutes;
-            }
-
-            getDaysUntilDate(dateString) {
-                try {
-                    const taskDate = new Date(dateString);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    taskDate.setHours(0, 0, 0, 0);
-                    
-                    const diffTime = taskDate - today;
-                    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                } catch (e) {
-                    return -1;
-                }
-            }
-
-            isTomorrow(dateString) {
-                if (!dateString) return false;
-                
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                // Check for exact tomorrow matches
-                const lowerDateString = dateString.toLowerCase();
-                
-                // If it contains "tomorrow", it's tomorrow
-                if (lowerDateString.includes('tomorrow')) {
-                    return true;
-                }
-                
-                // Check for various date formats
-                const tomorrowDateStr = `${tomorrow.getMonth() + 1}/${tomorrow.getDate()}/${tomorrow.getFullYear()}`;
-                const tomorrowShortDateStr = `${tomorrow.getMonth() + 1}/${tomorrow.getDate()}`;
-                const tomorrowISO = tomorrow.toISOString().split('T')[0];
-                
-                // Extract just the date part (before any time)
                 const dateOnly = dateString.split(' ')[0];
                 
-                // Try parsing as a date to handle various formats
-                try {
-                    const taskDate = new Date(dateString);
-                    if (!isNaN(taskDate)) {
-                        // Normalize both dates to compare just the date part
-                        const taskDateOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
-                        const tomorrowOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
-                        
-                        if (taskDateOnly.getTime() === tomorrowOnly.getTime()) {
-                            return true;
-                        }
-                    }
-                } catch (e) {
-                    // Continue with string matching if date parsing fails
+                if (dateOnly === todayStr) {
+                    const timePart = dateString.includes(' ') ? ' ' + dateString.split(' ').slice(1).join(' ') : '';
+                    return 'today' + timePart;
                 }
                 
-                // Fallback to string matching
-                return dateOnly === tomorrowDateStr || 
-                       dateOnly === tomorrowShortDateStr || 
-                       dateOnly === tomorrowISO ||
-                       dateString.includes(tomorrow.toLocaleDateString());
+                return dateString;
             }
 
-            isOverdue(dateString) {
+            static isToday(dateString) {
+                if (!dateString) return false;
+                
+                const today = new Date();
+                const todayFormats = [
+                    today.toISOString().split('T')[0],
+                    today.toLocaleDateString(),
+                    'today',
+                    today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+                ];
+
+                return todayFormats.some(format => 
+                    dateString.toLowerCase().includes(format.toLowerCase())
+                );
+            }
+
+            static isOverdue(dateString) {
                 if (!dateString) return false;
                 
                 try {
                     let taskDate = new Date(dateString);
                     
                     if (isNaN(taskDate)) {
-                        const parts = dateString.match(/(\\d{1,2})[-\\/](\\d{1,2})(?:[-\\/](\\d{2,4}))?/);
+                        const parts = dateString.match(/(\d{1,2})[-\/](\d{1,2})(?:[-\/](\d{2,4}))?/);
                         if (parts) {
                             const month = parseInt(parts[1]) - 1;
                             const day = parseInt(parts[2]);
@@ -1680,34 +814,52 @@
                 return false;
             }
 
-            toggleTomorrowPriority(taskElement) {
-                // This method is called from the global function
+            static getTomorrowDate() {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                return `${tomorrow.getMonth() + 1}/${tomorrow.getDate()}/${tomorrow.getFullYear()}`;
             }
 
-            formatDuration(minutes) {
-                if (minutes < 60) {
-                    return `${minutes}m`;
-                } else {
-                    const hours = Math.floor(minutes / 60);
-                    const mins = minutes % 60;
-                    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-                }
+            static getNextWeekDate() {
+                const nextWeek = new Date();
+                nextWeek.setDate(nextWeek.getDate() + 7);
+                return `${nextWeek.getMonth() + 1}/${nextWeek.getDate()}/${nextWeek.getFullYear()}`;
             }
 
-            formatDateForDisplay(dateString) {
-                if (!dateString) return '';
+            static getNextMondayDate() {
+                const date = new Date();
+                const day = date.getDay();
+                const nextMonday = new Date(date);
+                nextMonday.setDate(date.getDate() + ((1 + 7 - day) % 7 || 7));
+                return `${nextMonday.getMonth() + 1}/${nextMonday.getDate()}/${nextMonday.getFullYear()}`;
+            }
+        }
+
+        // End of Day UI Manager
+        class EndOfDayUI {
+            constructor() {
+                this.tomorrowPriorities = [];
+                this.init();
+                this.render();
+            }
+
+            init() {
+                // Initialize date and time
+                const now = new Date();
+                document.getElementById('currentDate').textContent = 
+                    `🌙 ${now.toLocaleDateString('en-US', { 
+                        weekday: 'long',
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}`;
                 
-                const today = new Date();
-                const todayStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
-                
-                const dateOnly = dateString.split(' ')[0];
-                
-                if (dateOnly === todayStr) {
-                    const timePart = dateString.includes(' ') ? ' ' + dateString.split(' ').slice(1).join(' ') : '';
-                    return 'today' + timePart;
-                }
-                
-                return dateString;
+                document.getElementById('currentTime').textContent = 
+                    now.toLocaleTimeString('en-US', { 
+                        hour: 'numeric', 
+                        minute: '2-digit',
+                        hour12: true 
+                    });
             }
 
             getTypeIcon(type) {
@@ -1725,34 +877,370 @@
                 return typeIcons[type] || '📌';
             }
 
-            isToday(dateString) {
-                if (!dateString) return false;
+            formatDuration(minutes) {
+                if (minutes < 60) {
+                    return `${minutes}m`;
+                } else {
+                    const hours = Math.floor(minutes / 60);
+                    const mins = minutes % 60;
+                    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+                }
+            }
+
+            render() {
+                const data = TaskStorage.get();
+                this.renderAccountability(data);
+                this.renderTomorrowSetup(data);
+            }
+
+            renderAccountability(data) {
+                // Get today's priorities (tasks with dayPriority)
+                const todaysPriorities = data.tasks.filter(task => 
+                    task.dayPriority && task.dayPriority >= 1 && task.dayPriority <= 3
+                );
+
+                const completedPriorities = todaysPriorities.filter(task => task.completed);
+                const priorityCount = `${completedPriorities.length}/${todaysPriorities.length}`;
                 
-                // Use the selected currentViewDate instead of actual today
-                const viewDate = currentViewDate || new Date();
-                const todayFormats = [
-                    viewDate.toISOString().split('T')[0],
-                    viewDate.toLocaleDateString(),
-                    viewDate.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
-                ];
+                document.getElementById('priorityCount').textContent = priorityCount;
                 
-                // Also check if it literally says "today" and we're viewing actual today
-                const actualToday = new Date();
-                if (dateString.toLowerCase().includes('today') && 
-                    viewDate.toDateString() === actualToday.toDateString()) {
-                    return true;
+                // Update priority status styling
+                const priorityCard = document.getElementById('priorityStatusCard');
+                const priorityText = priorityCard.querySelector('.priority-text');
+                
+                if (completedPriorities.length === todaysPriorities.length && todaysPriorities.length > 0) {
+                    priorityCard.className = 'priority-status completed';
+                    priorityText.className = 'priority-text completed';
+                    priorityText.textContent = 'All Priorities Complete! 🎉';
+                } else if (completedPriorities.length > 0) {
+                    priorityCard.className = 'priority-status partial';
+                    priorityText.className = 'priority-text partial';
+                    priorityText.textContent = 'Priorities Partial';
+                } else {
+                    priorityCard.className = 'priority-status incomplete';
+                    priorityText.className = 'priority-text incomplete';
+                    priorityText.textContent = 'Priorities Incomplete';
                 }
 
-                return todayFormats.some(format => 
-                    dateString.toLowerCase().includes(format.toLowerCase())
+                // Calculate task completion
+                const todaysTasks = data.tasks.filter(task => 
+                    DateUtils.isToday(task.doDate) && task.type !== 'event'
                 );
+                const completedTasks = todaysTasks.filter(task => task.completed);
+                document.getElementById('tasksCompleted').textContent = `${completedTasks.length} of ${todaysTasks.length}`;
+
+                // Calculate event attendance
+                const todaysEvents = data.tasks.filter(task => 
+                    task.type === 'event' && DateUtils.isToday(task.doDate)
+                );
+                const attendedEvents = todaysEvents.filter(event => event.completed);
+                document.getElementById('eventsAttended').textContent = `${attendedEvents.length} of ${todaysEvents.length}`;
+
+                // Calculate deadlines met
+                const todaysDeadlines = data.tasks.filter(task => 
+                    task.type === 'deadline' && DateUtils.isToday(task.doDate)
+                );
+                const metDeadlines = todaysDeadlines.filter(deadline => deadline.completed);
+                document.getElementById('deadlinesMet').textContent = `${metDeadlines.length} of ${todaysDeadlines.length}`;
+
+                // Calculate time logged
+                const totalSeconds = data.tasks
+                    .filter(task => task.timerElapsed && task.timerElapsed > 0)
+                    .reduce((total, task) => total + (task.timerElapsed || 0), 0);
+                
+                const timeLogged = this.formatDuration(Math.floor(totalSeconds / 60));
+                document.getElementById('timeLogged').textContent = timeLogged;
+                document.getElementById('totalLoggedTime').textContent = `${timeLogged} Total Logged`;
+
+                // Update day progress
+                const totalPlanned = todaysTasks.length + todaysEvents.length;
+                const totalCompleted = completedTasks.length + attendedEvents.length;
+                const progressPercent = totalPlanned > 0 ? Math.round((totalCompleted / totalPlanned) * 100) : 100;
+                document.getElementById('dayProgress').textContent = `${progressPercent}% Complete`;
+
+                // Show incomplete tasks
+                const incompleteTasks = todaysTasks.filter(task => !task.completed);
+                const incompleteContainer = document.getElementById('incompleteTasks');
+                const incompleteTitle = document.getElementById('incompleteTasksTitle');
+                
+                incompleteTitle.textContent = `Incomplete Tasks (${incompleteTasks.length})`;
+
+                if (incompleteTasks.length === 0) {
+                    incompleteContainer.innerHTML = `
+                        <div class="empty-state">
+                            <h3>✅ All Tasks Complete!</h3>
+                            <p>Great work today</p>
+                        </div>
+                    `;
+                } else {
+                    incompleteContainer.innerHTML = incompleteTasks.slice(0, 5).map(task => `
+                        <div class="task-item">
+                            <div class="task-content">
+                                <div class="task-title">${task.title || 'Untitled task'}</div>
+                                <div class="task-badges">
+                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                    <span class="task-badge badge-priority">!${task.priority}</span>
+                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
+                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                    ${task.doDate ? `<span class="task-badge badge-date">📅 ${DateUtils.formatDateForDisplay(task.doDate)}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            renderTomorrowSetup(data) {
+                // Get rollover candidates (incomplete tasks from today or overdue)
+                const rolloverCandidates = data.tasks.filter(task => 
+                    !task.completed && 
+                    task.type !== 'event' && 
+                    (DateUtils.isToday(task.doDate) || DateUtils.isOverdue(task.doDate))
+                );
+
+                const rolloverContainer = document.getElementById('rolloverTasks');
+                const rolloverTitle = document.getElementById('rolloverTitle');
+                
+                rolloverTitle.textContent = `Reschedule Tasks (${rolloverCandidates.length})`;
+
+                if (rolloverCandidates.length === 0) {
+                    rolloverContainer.innerHTML = `
+                        <div class="empty-state">
+                            <h3>🎉 Nothing to reschedule!</h3>
+                            <p>All tasks were completed or are scheduled for future dates</p>
+                        </div>
+                    `;
+                } else {
+                    rolloverContainer.innerHTML = rolloverCandidates.map(task => `
+                        <div class="task-item">
+                            <button class="task-checkbox" onclick="toggleRollover(${task.id})">
+                            </button>
+                            <div class="task-content">
+                                <div class="task-title">${task.title || 'Untitled task'}</div>
+                                <div class="task-badges">
+                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                    <span class="task-badge badge-priority">!${task.priority}</span>
+                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
+                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                    <span class="task-badge badge-date ${DateUtils.isOverdue(task.doDate) ? 'overdue' : ''}" onclick="showDatePicker(${task.id}, event)">
+                                        📅 ${DateUtils.isOverdue(task.doDate) ? 'overdue' : 'tomorrow'}
+                                        <div class="date-dropdown" id="dropdown-${task.id}">
+                                            <div class="date-option" onclick="updateTaskDate(${task.id}, 'tomorrow')">Tomorrow</div>
+                                            <div class="date-option" onclick="updateTaskDate(${task.id}, 'monday')">Monday</div>
+                                            <div class="date-option" onclick="updateTaskDate(${task.id}, 'next-week')">Next Week</div>
+                                            <div class="date-option" onclick="showCalendarPicker(${task.id}, event)">📅 Pick Date...</div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Render tomorrow priority selection
+                this.renderTomorrowPriorities(data, rolloverCandidates);
+                
+                // Render tomorrow's preview
+                this.renderTomorrowPreview(data);
+            }
+
+            renderTomorrowPriorities(data, rolloverCandidates) {
+                // Get candidates for tomorrow priorities (rollover + future tasks)
+                const tomorrowCandidates = [
+                    ...rolloverCandidates,
+                    ...data.tasks.filter(task => 
+                        !task.completed && 
+                        task.type !== 'event' && 
+                        (task.priority === 'critical' || task.priority === 'important') &&
+                        !DateUtils.isToday(task.doDate) &&
+                        !DateUtils.isOverdue(task.doDate)
+                    )
+                ].slice(0, 10); // Limit to 10 candidates
+
+                const priorityContainer = document.getElementById('tomorrowTaskList');
+                const priorityTitle = document.getElementById('tomorrowPriorityTitle');
+                
+                priorityTitle.textContent = `Set Tomorrow's 3 Priorities (${this.tomorrowPriorities.length}/3)`;
+
+                if (tomorrowCandidates.length === 0) {
+                    priorityContainer.innerHTML = `
+                        <div class="empty-state">
+                            <p>No tasks available for priority selection</p>
+                            <p style="font-size: 12px;">Add tasks in Command Center</p>
+                        </div>
+                    `;
+                } else {
+                    priorityContainer.innerHTML = tomorrowCandidates.map(task => `
+                        <div class="tomorrow-task" onclick="toggleTomorrowPriority(${task.id})">
+                            <button class="priority-star">☆</button>
+                            <div class="task-info">
+                                <div class="task-title">${task.title || 'Untitled task'}</div>
+                                <div class="task-duration">${task.hours || '1h'}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            renderTomorrowPreview(data) {
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const tomorrowStr = `${tomorrow.getMonth() + 1}/${tomorrow.getDate()}/${tomorrow.getFullYear()}`;
+                
+                // Get tomorrow's tasks, events and deadlines
+                const tomorrowTasks = data.tasks.filter(task => 
+                    task.doDate && (
+                        task.doDate.includes(tomorrowStr) ||
+                        task.doDate === 'tomorrow' ||
+                        task.doDate === DateUtils.getTomorrowDate()
+                    )
+                );
+                
+                const tomorrowEvents = tomorrowTasks.filter(task => task.type === 'event');
+                const tomorrowDeadlines = tomorrowTasks.filter(task => task.type === 'deadline');
+                const tomorrowRegular = tomorrowTasks.filter(task => task.type !== 'event' && task.type !== 'deadline');
+                
+                const previewContainer = document.getElementById('tomorrowPreview');
+                const previewTitle = document.getElementById('tomorrowPreviewTitle');
+                
+                const totalItems = tomorrowEvents.length + tomorrowDeadlines.length + tomorrowRegular.length;
+                previewTitle.textContent = `Tomorrow's Schedule (${totalItems} items)`;
+                
+                if (totalItems === 0) {
+                    previewContainer.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📅 No scheduled items</h3>
+                            <p>Tomorrow is wide open</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                
+                // Events first
+                if (tomorrowEvents.length > 0) {
+                    html += `<div style="margin-bottom: 12px;">
+                        <h4 style="color: #60a5fa; font-size: 14px; margin-bottom: 8px;">📅 Events (${tomorrowEvents.length})</h4>
+                        ${tomorrowEvents.map(event => `
+                            <div class="task-item" style="margin-bottom: 8px;">
+                                <div class="task-content">
+                                    <div class="task-title">${event.title || 'Untitled event'}</div>
+                                    <div class="task-badges">
+                                        <span class="task-badge badge-type">📅event</span>
+                                        ${event.client ? `<span class="task-badge badge-client">@${event.client}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
+                
+                // Deadlines second
+                if (tomorrowDeadlines.length > 0) {
+                    html += `<div style="margin-bottom: 12px;">
+                        <h4 style="color: #ef4444; font-size: 14px; margin-bottom: 8px;">⏰ Deadlines (${tomorrowDeadlines.length})</h4>
+                        ${tomorrowDeadlines.map(deadline => `
+                            <div class="task-item" style="margin-bottom: 8px;">
+                                <div class="task-content">
+                                    <div class="task-title">${deadline.title || 'Untitled deadline'}</div>
+                                    <div class="task-badges">
+                                        <span class="task-badge badge-type">⏰deadline</span>
+                                        <span class="task-badge badge-priority">!${deadline.priority}</span>
+                                        ${deadline.client ? `<span class="task-badge badge-client">@${deadline.client}</span>` : ''}
+                                        ${deadline.case ? `<span class="task-badge badge-case">#${deadline.case}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
+                
+                // Regular tasks last  
+                if (tomorrowRegular.length > 0) {
+                    html += `<div>
+                        <h4 style="color: #4ade80; font-size: 14px; margin-bottom: 8px;">📌 Tasks (${tomorrowRegular.length})</h4>
+                        ${tomorrowRegular.slice(0, 5).map(task => `
+                            <div class="task-item" style="margin-bottom: 8px;">
+                                <div class="task-content">
+                                    <div class="task-title">${task.title || 'Untitled task'}</div>
+                                    <div class="task-badges">
+                                        ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                        <span class="task-badge badge-priority">!${task.priority}</span>
+                                        ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
+                                        ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                        ${tomorrowRegular.length > 5 ? `<p style="color: #9ca3af; font-size: 12px; text-align: center;">... and ${tomorrowRegular.length - 5} more tasks</p>` : ''}
+                    </div>`;
+                }
+                
+                previewContainer.innerHTML = html;
             }
         }
 
-        // Tomorrow priority management
-        let tomorrowPriorities = 0;
+        // Global functions
+        let rolloverSelections = new Set();
+        let endOfDayUI;
 
-        function toggleTomorrowPriority(taskElement) {
+        function toggleRollover(taskId) {
+            const checkbox = event.target;
+            if (rolloverSelections.has(taskId)) {
+                rolloverSelections.delete(taskId);
+                checkbox.classList.remove('checked');
+                checkbox.textContent = '';
+            } else {
+                rolloverSelections.add(taskId);
+                checkbox.classList.add('checked');
+                checkbox.textContent = '✓';
+            }
+        }
+
+        function showDatePicker(taskId, event) {
+            event.stopPropagation();
+            
+            // Hide all other dropdowns
+            document.querySelectorAll('.date-dropdown').forEach(dropdown => {
+                dropdown.style.display = 'none';
+            });
+            
+            // Show this dropdown
+            const dropdown = document.getElementById(`dropdown-${taskId}`);
+            dropdown.style.display = 'block';
+            
+            // Hide on click outside
+            setTimeout(() => {
+                document.addEventListener('click', function hideDropdown() {
+                    dropdown.style.display = 'none';
+                    document.removeEventListener('click', hideDropdown);
+                });
+            }, 100);
+        }
+
+        function updateTaskDate(taskId, dateOption) {
+            let newDate;
+            switch(dateOption) {
+                case 'tomorrow':
+                    newDate = DateUtils.getTomorrowDate();
+                    break;
+                case 'monday':
+                    newDate = DateUtils.getNextMondayDate();
+                    break;
+                case 'next-week':
+                    newDate = DateUtils.getNextWeekDate();
+                    break;
+                default:
+                    newDate = DateUtils.getTomorrowDate();
+            }
+            
+            TaskStorage.updateTask(taskId, { doDate: newDate });
+            endOfDayUI.render();
+        }
+
+        function toggleTomorrowPriority(taskId) {
+            const taskElement = event.currentTarget;
             const star = taskElement.querySelector('.priority-star');
             const isActive = star.classList.contains('active');
             
@@ -1761,75 +1249,37 @@
                 star.classList.remove('active');
                 star.textContent = '☆';
                 taskElement.classList.remove('priority');
-                tomorrowPriorities--;
-            } else if (tomorrowPriorities < 3) {
+                const index = endOfDayUI.tomorrowPriorities.indexOf(taskId);
+                if (index > -1) {
+                    endOfDayUI.tomorrowPriorities.splice(index, 1);
+                }
+                // Update numbers for remaining priorities
+                updatePriorityNumbers();
+            } else if (endOfDayUI.tomorrowPriorities.length < 3) {
                 // Add priority
                 star.classList.add('active');
-                star.textContent = '★';
                 taskElement.classList.add('priority');
-                tomorrowPriorities++;
+                endOfDayUI.tomorrowPriorities.push(taskId);
+                // Update numbers for all priorities
+                updatePriorityNumbers();
             }
             
-            // Update priority counter display if needed
-            updatePriorityDisplay();
+            // Update title
+            document.getElementById('tomorrowPriorityTitle').textContent = 
+                `Set Tomorrow's 3 Priorities (${endOfDayUI.tomorrowPriorities.length}/3)`;
         }
 
-        function updatePriorityDisplay() {
-            const priorityText = document.querySelector('.priority-selector h3');
-            priorityText.textContent = `🎯 Set Tomorrow's 3 Priorities (${tomorrowPriorities}/3):`;
+        function updatePriorityNumbers() {
+            // Update star display with stars and numbers like Start of Day
+            endOfDayUI.tomorrowPriorities.forEach((taskId, index) => {
+                const taskElement = document.querySelector(`[onclick*="toggleTomorrowPriority(${taskId})"]`);
+                if (taskElement) {
+                    const star = taskElement.querySelector('.priority-star');
+                    star.textContent = `⭐${index + 1}`;
+                }
+            });
         }
 
-        // Timer management functions
-        function stopAndLogTimer() {
-            // Stop the timer and log the time
-            localStorage.removeItem('activeTimer');
-            document.getElementById('timerAlert').classList.add('hidden');
-            
-            // Update metrics to include the logged time
-            endOfDayUI.calculateDayMetrics();
-            
-            // Show confirmation
-            alert('Timer stopped and time logged successfully!');
-        }
-
-        function keepTimerRunning() {
-            // Keep timer running and dismiss alert
-            document.getElementById('timerAlert').classList.add('hidden');
-        }
-
-        function stopWithoutLogging() {
-            // Stop timer without logging time
-            localStorage.removeItem('activeTimer');
-            document.getElementById('timerAlert').classList.add('hidden');
-            
-            // Show confirmation
-            alert('Timer stopped without logging time.');
-        }
-
-        // Reflection functions
-        function saveReflection() {
-            const reflectionData = {
-                date: new Date().toISOString(),
-                challenge: document.querySelector('textarea[placeholder*="challenge"]').value,
-                insight: document.querySelector('textarea[placeholder*="learn"]').value,
-                focus: document.querySelector('textarea[placeholder*="prioritize"]').value,
-                rating: 8 // Could be made interactive
-            };
-            
-            // Save to localStorage
-            const reflections = JSON.parse(localStorage.getItem('dailyReflections') || '[]');
-            reflections.push(reflectionData);
-            localStorage.setItem('dailyReflections', JSON.stringify(reflections));
-            
-            alert('Reflection saved successfully!');
-        }
-
-        function skipReflection() {
-            // Just continue without saving
-            alert('Reflection skipped.');
-        }
-
-        // Productivity rating function
         function setProductivityRating(event) {
             const ratingBar = event.target.closest('.rating-bar');
             const rect = ratingBar.getBoundingClientRect();
@@ -1837,99 +1287,168 @@
             const percentage = (clickX / rect.width) * 100;
             const rating = Math.max(1, Math.min(10, Math.ceil(percentage / 10)));
             
-            // Update the visual rating
+            // Update visual
             document.getElementById('productivityFill').style.width = `${rating * 10}%`;
             document.getElementById('productivityRating').textContent = `${rating}/10`;
-            
-            // Store the rating
-            localStorage.setItem('dailyProductivityRating', rating);
         }
 
-        // Final action functions
         function saveAndCloseDay() {
-            // Save all day data and close
-            const dayData = {
-                date: new Date().toISOString(),
-                priorities: tomorrowPriorities,
-                completed: true
-            };
+            // Save rollover selections
+            rolloverSelections.forEach(taskId => {
+                TaskStorage.updateTask(taskId, { doDate: DateUtils.getTomorrowDate() });
+            });
             
-            localStorage.setItem('dayCompleted', JSON.stringify(dayData));
+            // Save tomorrow priorities
+            endOfDayUI.tomorrowPriorities.forEach((taskId, index) => {
+                TaskStorage.updateTask(taskId, { dayPriority: index + 1 });
+            });
             
-            alert('Day saved successfully! See you tomorrow! 🌅');
+            // Save reflection
+            const insight = document.getElementById('keyInsight').value;
+            const rating = document.getElementById('productivityRating').textContent;
             
-            // Optionally redirect to start of day or close
-            // window.location.href = 'unified-legal-tasks.html';
+            if (insight || rating !== 'Rate your day') {
+                const reflection = {
+                    date: new Date().toISOString(),
+                    insight: insight,
+                    rating: rating,
+                    timestamp: Date.now()
+                };
+                
+                const reflections = JSON.parse(localStorage.getItem('dailyReflections') || '[]');
+                reflections.push(reflection);
+                localStorage.setItem('dailyReflections', JSON.stringify(reflections));
+            }
+            
+            alert('Day closed successfully! Tomorrow\'s priorities are set. 🌅');
+            
+            // Optionally redirect to start of day
+            // window.location.href = 'start-of-day.html';
         }
 
-        function viewDetailedReports() {
-            // Navigate to detailed reports view
-            alert('Detailed reports feature coming soon!');
+        // Calendar picker functionality
+        let currentCalendarTaskId = null;
+        let currentCalendarDate = new Date();
+
+        function showCalendarPicker(taskId, event) {
+            event.stopPropagation();
+            
+            // Hide dropdown
+            const dropdown = document.getElementById(`dropdown-${taskId}`);
+            dropdown.style.display = 'none';
+            
+            // Remove any existing calendar picker
+            const existingCalendar = document.getElementById('calendar-picker-popup');
+            if (existingCalendar) {
+                existingCalendar.remove();
+            }
+            
+            // Create calendar picker popup
+            const calendar = document.createElement('div');
+            calendar.id = 'calendar-picker-popup';
+            calendar.className = 'calendar-picker';
+            
+            // Position relative to the clicked badge
+            const badge = event.target.closest('.badge-date');
+            const rect = badge.getBoundingClientRect();
+            calendar.style.top = `${rect.bottom + 5}px`;
+            calendar.style.left = `${rect.left}px`;
+            
+            calendar.innerHTML = `
+                <div class="calendar-header">
+                    <button class="calendar-nav" onclick="changeCalendarMonth(${taskId}, -1)">‹</button>
+                    <span class="calendar-month-year" id="calendar-month-year-${taskId}"></span>
+                    <button class="calendar-nav" onclick="changeCalendarMonth(${taskId}, 1)">›</button>
+                </div>
+                <div class="calendar-weekdays">
+                    <div class="calendar-weekday">Su</div>
+                    <div class="calendar-weekday">Mo</div>
+                    <div class="calendar-weekday">Tu</div>
+                    <div class="calendar-weekday">We</div>
+                    <div class="calendar-weekday">Th</div>
+                    <div class="calendar-weekday">Fr</div>
+                    <div class="calendar-weekday">Sa</div>
+                </div>
+                <div class="calendar-grid" id="calendar-grid-${taskId}"></div>
+            `;
+            
+            document.body.appendChild(calendar);
+            
+            currentCalendarTaskId = taskId;
+            currentCalendarDate = new Date();
+            
+            renderCalendar(taskId);
+            
+            // Hide on click outside
+            setTimeout(() => {
+                document.addEventListener('click', function hideCalendar(e) {
+                    if (!calendar.contains(e.target)) {
+                        calendar.remove();
+                        document.removeEventListener('click', hideCalendar);
+                    }
+                });
+            }, 100);
         }
 
-        // Date switching functionality
-        let currentViewDate = new Date(); // Default to today
-        let isViewingToday = true;
-
-        function switchToToday() {
-            currentViewDate = new Date();
-            isViewingToday = true;
-            
-            // Update button styles
-            document.getElementById('todayBtn').classList.add('active');
-            document.getElementById('yesterdayBtn').classList.remove('active');
-            
-            // Update date display
-            document.getElementById('currentDate').textContent = 
-                `🌙 End of Day Review - ${currentViewDate.toLocaleDateString('en-US', { 
-                    weekday: 'long',
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                })}`;
-            
-            // Refresh data
-            endOfDayUI.calculateDayMetrics();
+        function changeCalendarMonth(taskId, direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            renderCalendar(taskId);
         }
 
-        function switchToYesterday() {
-            currentViewDate = new Date();
-            currentViewDate.setDate(currentViewDate.getDate() - 1);
-            isViewingToday = false;
+        function renderCalendar(taskId) {
+            const monthYear = document.getElementById(`calendar-month-year-${taskId}`);
+            const grid = document.getElementById(`calendar-grid-${taskId}`);
             
-            // Update button styles
-            document.getElementById('yesterdayBtn').classList.add('active');
-            document.getElementById('todayBtn').classList.remove('active');
+            const month = currentCalendarDate.getMonth();
+            const year = currentCalendarDate.getFullYear();
             
-            // Update date display
-            document.getElementById('currentDate').textContent = 
-                `🌙 End of Day Review - ${currentViewDate.toLocaleDateString('en-US', { 
-                    weekday: 'long',
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                })}`;
+            monthYear.textContent = currentCalendarDate.toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
             
-            // Refresh data
-            endOfDayUI.calculateDayMetrics();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDate = new Date(firstDay);
+            startDate.setDate(startDate.getDate() - firstDay.getDay());
+            
+            const today = new Date();
+            let html = '';
+            
+            for (let i = 0; i < 42; i++) {
+                const date = new Date(startDate);
+                date.setDate(startDate.getDate() + i);
+                
+                const isCurrentMonth = date.getMonth() === month;
+                const isToday = date.toDateString() === today.toDateString();
+                
+                let classes = 'calendar-day';
+                if (!isCurrentMonth) classes += ' other-month';
+                if (isToday) classes += ' today';
+                
+                const dateStr = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+                
+                html += `<button class="${classes}" onclick="selectCalendarDate('${dateStr}')">${date.getDate()}</button>`;
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        function selectCalendarDate(dateStr) {
+            TaskStorage.updateTask(currentCalendarTaskId, { doDate: dateStr });
+            
+            // Hide calendar
+            const calendar = document.getElementById('calendar-picker-popup');
+            if (calendar) {
+                calendar.remove();
+            }
+            
+            endOfDayUI.render();
         }
 
         // Initialize the app
-        let endOfDayUI;
-        
         document.addEventListener('DOMContentLoaded', () => {
-            // Create endOfDayUI first
             endOfDayUI = new EndOfDayUI();
-            updatePriorityDisplay();
-            
-            // Default to yesterday if it's after midnight (00:00 - 06:00)
-            const now = new Date();
-            const hour = now.getHours();
-            
-            if (hour >= 0 && hour < 6) {
-                // It's late night/early morning, probably want yesterday's data
-                switchToYesterday();
-            }
         });
     </script>
 </body>

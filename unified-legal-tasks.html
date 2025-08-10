@@ -830,6 +830,7 @@
                 <button class="view-tab active" onclick="showView('command-center')">📊 Command Center</button>
                 <button class="view-tab" onclick="showView('task-entry')">✏️ Task Entry</button>
                 <a href="start-of-day.html" class="view-tab">🌅 Start of Day</a>
+                <a href="end-of-day.html" class="view-tab">🌙 End of Day</a>
             </div>
         </div>
 
@@ -2377,6 +2378,19 @@
 
         // Initialize the app
         const uiManager = new UIManager();
+        
+        // Check for URL parameters to determine initial view
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedView = urlParams.get('view');
+            
+            if (requestedView === 'task-entry') {
+                showView('task-entry');
+            } else {
+                // Default to command center
+                showView('command-center');
+            }
+        });
         
         // Render command center initially
         setTimeout(() => {

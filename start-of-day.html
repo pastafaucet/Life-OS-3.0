@@ -350,6 +350,7 @@
         .badge-case { background: rgba(236, 72, 153, 0.1); color: #f472b6; }
         .badge-date { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
         .badge-priority { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+        .badge-type { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
 
         /* Bottom Grid */
         .bottom-grid {
@@ -358,6 +359,11 @@
             gap: 24px;
         }
 
+        .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+        
         @media (max-width: 1000px) {
             .bottom-grid {
                 grid-template-columns: 1fr;
@@ -434,6 +440,65 @@
             font-weight: 700;
             margin-left: 4px;
         }
+
+        /* Time Cards */
+        .time-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .time-card {
+            background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .time-card:hover {
+            border-color: #3a3a3a;
+            transform: translateY(-1px);
+        }
+
+        .time-period {
+            color: #9ca3af;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .time-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .time-value.logged {
+            color: #4ade80;
+        }
+
+        .time-value.no-time {
+            color: #6b7280;
+        }
+
+        .time-value.target-met {
+            color: #4ade80;
+        }
+
+        .time-value.in-progress {
+            color: #fbbf24;
+        }
+
+        @media (max-width: 600px) {
+            .time-cards {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -445,6 +510,7 @@
                 <a href="unified-legal-tasks.html" class="view-tab">📊 Command Center</a>
                 <a href="unified-legal-tasks.html#task-entry" class="view-tab">✏️ Task Entry</a>
                 <a href="start-of-day.html" class="view-tab active">🌅 Start of Day</a>
+                <a href="end-of-day.html" class="view-tab">🌙 End of Day</a>
             </div>
         </div>
 
@@ -460,7 +526,7 @@
                     <span>😴</span>
                     <span id="sleepInfo">Sleep: --</span>
                 </div>
-                <div class="info-item">
+                <div class="info-item" style="color: #fbbf24;">
                     <span>⏱️</span>
                     <span id="totalDayTime">0h Total Projected</span>
                 </div>
@@ -477,41 +543,35 @@
 
             <!-- Today's Schedule -->
             <div class="card">
-                <h2 class="card-title">⏰ Today's Schedule</h2>
+                <h2 class="card-title" id="scheduleTitle">⏰ Today's Schedule</h2>
                 <div id="todaySchedule"></div>
-                <div class="schedule-total">
-                    <div class="schedule-total-hours" id="totalScheduledHours">0 hours</div>
-                    <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">Total Scheduled</div>
-                </div>
             </div>
         </div>
 
-        <!-- Today's Tasks - Full Width -->
-        <div class="tasks-section">
-            <h2 class="card-title">📋 Today's Tasks - Choose 3 Priorities</h2>
-            <div id="todayTasks"></div>
-            <div class="schedule-total">
-                <div class="schedule-total-hours" id="totalTaskHours">0 hours</div>
-                <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">Total Task Time Projected</div>
-            </div>
-        </div>
-
-        <!-- Bottom Grid: Quick Metrics & AI Insights -->
+        <!-- Tasks and Metrics Side-by-Side -->
         <div class="bottom-grid">
-            <!-- Quick Metrics -->
+            <!-- Today's Tasks -->
             <div class="card">
-                <h2 class="card-title">📈 Quick Metrics</h2>
-                <div id="quickMetrics"></div>
+                <h2 class="card-title" id="tasksTitle">📋 Today's Tasks - Choose 3 Priorities</h2>
+                <div id="todayTasks"></div>
             </div>
 
-            <!-- AI Insights -->
-            <div class="card">
-                <h2 class="card-title">🤖 AI Insights & Analytics</h2>
-                <div class="ai-placeholder">
-                    <div style="font-size: 48px; margin-bottom: 16px;">🧠</div>
-                    <div>AI-powered insights coming soon...</div>
-                    <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">
-                        Pattern analysis, recommendations, productivity insights
+            <div class="right-column">
+                <!-- Quick Metrics -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <h2 class="card-title">📈 Quick Metrics</h2>
+                    <div id="quickMetrics"></div>
+                </div>
+
+                <!-- AI Insights -->
+                <div class="card">
+                    <h2 class="card-title">🤖 AI Insights</h2>
+                    <div class="ai-placeholder">
+                        <div style="font-size: 32px; margin-bottom: 12px;">🧠</div>
+                        <div>AI insights coming soon...</div>
+                        <div style="font-size: 12px; margin-top: 6px; opacity: 0.7;">
+                            Pattern analysis & recommendations
+                        </div>
                     </div>
                 </div>
             </div>
@@ -785,6 +845,21 @@
                 return str.replace(/\b\w/g, l => l.toUpperCase());
             }
 
+            getTypeIcon(type) {
+                const typeIcons = {
+                    'deadline': '⏰',
+                    'event': '📅',
+                    'meeting': '👥',
+                    'call': '📞',
+                    'research': '🔍',
+                    'filing': '📋',
+                    'review': '👁️',
+                    'client': '🤝',
+                    'admin': '⚙️'
+                };
+                return typeIcons[type] || '📌';
+            }
+
             render() {
                 this.renderCriticalItems();
                 this.renderTodaySchedule();
@@ -803,10 +878,10 @@
                     // Critical priority items
                     if (task.priority === 'critical') return true;
                     
-                    // Items due today
-                    if (DateUtils.isToday(task.doDate)) return true;
+                    // Deadlines due today (not all items due today)
+                    if (task.type === 'deadline' && DateUtils.isToday(task.doDate)) return true;
                     
-                    // Overdue items
+                    // Overdue items (any priority)
                     if (DateUtils.isOverdue(task.doDate)) return true;
                     
                     return false;
@@ -839,8 +914,20 @@
                             ${task.completed ? '✓' : ''}
                         </button>
                         <div class="critical-title ${task.completed ? 'completed' : ''}">
-                            ${task.title || 'Untitled task'}
-                            ${DateUtils.isOverdue(task.doDate) ? ' ⚠️ OVERDUE' : ''}
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>${task.title || 'Untitled task'}</div>
+                                <div style="display: flex; gap: 8px; font-size: 12px; font-weight: 600;">
+                                    ${DateUtils.isOverdue(task.doDate) ? '<span style="color: #ef4444;">⚠️ OVERDUE</span>' : ''}
+                                    ${task.type === 'deadline' ? '<span style="color: #f59e0b;">(DEADLINE)</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="task-badges" style="margin-top: 6px;">
+                                ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                <span class="task-badge badge-priority">!${task.priority}</span>
+                                ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
+                                ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                ${task.doDate ? `<span class="task-badge badge-date">📅 ${DateUtils.formatDateForDisplay(task.doDate)}</span>` : ''}
+                            </div>
                         </div>
                     </div>
                 `).join('');
@@ -868,7 +955,7 @@
                             <p>Your schedule is clear for today</p>
                         </div>
                     `;
-                    document.getElementById('totalScheduledHours').textContent = '0 hours';
+                    document.getElementById('scheduleTitle').textContent = '⏰ Today\'s Schedule';
                     return;
                 }
 
@@ -883,31 +970,34 @@
                         <div class="schedule-item">
                             <div class="schedule-time">${time}</div>
                             <div class="schedule-title">${event.title || 'Untitled Event'}</div>
-                            <div class="schedule-duration">
-                                ${this.formatDuration(duration)}
-                                ${event.client ? `• ${event.client}` : ''}
-                                ${event.case ? `• ${event.case}` : ''}
+                            <div class="schedule-duration">${this.formatDuration(duration)}</div>
+                            <div class="task-badges" style="margin-top: 8px;">
+                                <span class="task-badge badge-type">${this.getTypeIcon(event.type || 'event')}${event.type || 'event'}</span>
+                                <span class="task-badge badge-priority">!${event.priority || 'important'}</span>
+                                ${event.client ? `<span class="task-badge badge-client">@${event.client}</span>` : ''}
+                                ${event.case ? `<span class="task-badge badge-case">#${event.case}</span>` : ''}
+                                ${event.doDate ? `<span class="task-badge badge-date">📅 ${DateUtils.formatDateForDisplay(event.doDate)}</span>` : ''}
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                // Update total
+                // Update schedule title with time
                 const totalHours = Math.floor(totalMinutes / 60);
                 const remainingMinutes = totalMinutes % 60;
-                document.getElementById('totalScheduledHours').textContent = 
-                    `${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}`;
+                const scheduleText = totalMinutes > 0 ? ` - ${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}` : '';
+                document.getElementById('scheduleTitle').textContent = `⏰ Today's Schedule${scheduleText}`;
             }
 
             renderTodayTasks() {
                 const container = document.getElementById('todayTasks');
                 const data = TaskStorage.get();
                 
-                // Get tasks for today (excluding events which are shown in schedule)
+                // Get tasks for today only (excluding events which are shown in schedule)
                 const todayTasks = data.tasks.filter(task => 
                     !task.completed &&
                     task.type !== 'event' && 
-                    (DateUtils.isToday(task.doDate) || task.priority === 'critical' || task.priority === 'important')
+                    DateUtils.isToday(task.doDate)
                 ).sort((a, b) => {
                     // Sort by priority star first, then by priority level
                     const aStar = a.dayPriority || 0;
@@ -953,21 +1043,22 @@
                                     ${task.hours ? `<span style="color: #9ca3af; font-size: 12px; margin-left: 8px;">(${this.formatDuration(taskDuration)})</span>` : ''}
                                 </div>
                                 <div class="task-badges">
+                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                    <span class="task-badge badge-priority">!${task.priority}</span>
                                     ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
                                     ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
                                     ${task.doDate ? `<span class="task-badge badge-date">📅 ${DateUtils.formatDateForDisplay(task.doDate)}</span>` : ''}
-                                    <span class="task-badge badge-priority">!${task.priority}</span>
                                 </div>
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                // Update total task time
+                // Update tasks title with time
                 const totalHours = Math.floor(totalTaskMinutes / 60);
                 const remainingMinutes = totalTaskMinutes % 60;
-                document.getElementById('totalTaskHours').textContent = 
-                    `${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}`;
+                const taskText = totalTaskMinutes > 0 ? ` - ${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}` : '';
+                document.getElementById('tasksTitle').textContent = `📋 Today's Tasks - Choose 3 Priorities${taskText}`;
             }
 
             renderQuickMetrics() {
@@ -979,14 +1070,21 @@
                 yesterday.setDate(yesterday.getDate() - 1);
                 const yesterdayStr = yesterday.toISOString().split('T')[0];
                 
+                // Fix yesterday logic - only count tasks that were actually due yesterday
                 const yesterdayCompleted = data.tasks.filter(task => 
                     task.completedDate && task.completedDate.startsWith(yesterdayStr)
                 ).length;
                 
+                // Count tasks that were due yesterday
                 const yesterdayTotal = data.tasks.filter(task => {
-                    if (task.completedDate && task.completedDate.startsWith(yesterdayStr)) return true;
-                    return DateUtils.isToday(task.doDate) && !task.completed;
-                }).length + yesterdayCompleted;
+                    if (!task.doDate) return false;
+                    
+                    // Check if task was due yesterday using date string matching
+                    const yesterdayFormatted = yesterday.toLocaleDateString();
+                    return task.doDate.includes(yesterdayFormatted) || 
+                           task.doDate.includes(yesterdayStr) ||
+                           task.doDate.toLowerCase().includes('yesterday');
+                }).length;
 
                 const activeCases = new Set(
                     data.tasks
@@ -996,6 +1094,7 @@
 
                 const thisWeekTasks = data.tasks.filter(task => {
                     if (task.completed) return false;
+                    if (task.type === 'event' || task.type === 'deadline') return false; // Count separately
                     const now = new Date();
                     const weekEnd = new Date(now);
                     weekEnd.setDate(now.getDate() + (6 - now.getDay())); // End of week
@@ -1017,11 +1116,17 @@
                     !task.completed
                 ).length;
 
+                const thisWeekDeadlines = data.tasks.filter(task => 
+                    task.type === 'deadline' && 
+                    task.doDate &&
+                    !task.completed
+                ).length;
+
                 const overdueItems = data.tasks.filter(task => 
                     !task.completed && DateUtils.isOverdue(task.doDate)
                 ).length;
 
-                // Time metrics
+                // Time metrics - consolidated
                 const yesterdayTime = TimeAnalytics.getYesterdayTime();
                 const weekTime = TimeAnalytics.getWeekTime();
                 const monthTime = TimeAnalytics.getMonthTime();
@@ -1029,13 +1134,8 @@
                 const metrics = [
                     {
                         label: 'Yesterday Completed',
-                        value: `${yesterdayCompleted} of ${yesterdayTotal}`,
-                        className: yesterdayCompleted === yesterdayTotal ? 'success' : 'warning'
-                    },
-                    {
-                        label: 'Yesterday Time Logged',
-                        value: TimeAnalytics.formatTime(yesterdayTime),
-                        className: yesterdayTime > 0 ? 'success' : ''
+                        value: yesterdayTotal > 0 ? `${yesterdayCompleted} of ${yesterdayTotal}` : 'No tasks due',
+                        className: yesterdayTotal === 0 ? '' : (yesterdayCompleted === yesterdayTotal ? 'success' : 'warning')
                     },
                     {
                         label: 'Active Cases',
@@ -1043,19 +1143,9 @@
                         className: ''
                     },
                     {
-                        label: 'This Week Time',
-                        value: TimeAnalytics.formatTime(weekTime),
-                        className: weekTime > 144000 ? 'success' : 'warning' // 40 hours
-                    },
-                    {
-                        label: 'This Week Tasks/Events',
-                        value: `${thisWeekTasks} tasks, ${thisWeekEvents} events`,
+                        label: 'This Week Pipeline',
+                        value: `${thisWeekTasks} tasks • ${thisWeekEvents} events`,
                         className: ''
-                    },
-                    {
-                        label: 'This Month Time',
-                        value: TimeAnalytics.formatTime(monthTime),
-                        className: monthTime > 576000 ? 'success' : 'warning' // 160 hours
                     },
                     {
                         label: 'Overdue Items',
@@ -1064,7 +1154,25 @@
                     }
                 ];
 
-                container.innerHTML = metrics.map(metric => `
+                // Create time cards section
+                const timeCards = `
+                    <div class="time-cards">
+                        <div class="time-card">
+                            <div class="time-period">Yesterday</div>
+                            <div class="time-value ${yesterdayTime > 0 ? 'logged' : 'no-time'}">${TimeAnalytics.formatTime(yesterdayTime)}</div>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-period">This Week</div>
+                            <div class="time-value ${weekTime > 144000 ? 'target-met' : 'in-progress'}">${TimeAnalytics.formatTime(weekTime)}</div>
+                        </div>
+                        <div class="time-card">
+                            <div class="time-period">This Month</div>
+                            <div class="time-value ${monthTime > 576000 ? 'target-met' : 'in-progress'}">${TimeAnalytics.formatTime(monthTime)}</div>
+                        </div>
+                    </div>
+                `;
+
+                container.innerHTML = timeCards + metrics.map(metric => `
                     <div class="metric-item">
                         <div class="metric-label">${metric.label}:</div>
                         <div class="metric-value ${metric.className}">${metric.value}</div>
@@ -1156,7 +1264,7 @@
                 const todayTasks = data.tasks.filter(task => 
                     !task.completed &&
                     task.type !== 'event' && 
-                    (DateUtils.isToday(task.doDate) || task.priority === 'critical' || task.priority === 'important')
+                    DateUtils.isToday(task.doDate)
                 );
                 
                 todayTasks.forEach(task => {

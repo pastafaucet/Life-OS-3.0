@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Task Command Center</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Navigation */
+        .header {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        /* Active Timer Card */
+        .active-timer {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+            border-color: #3b82f6;
+        }
+
+        .timer-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer-time {
+            font-size: 36px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .timer-task {
+            font-size: 16px;
+            color: #9ca3af;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .timer-btn.stop {
+            background: #ef4444;
+            color: white;
+        }
+
+        .timer-btn.stop:hover {
+            background: #dc2626;
+        }
+
+        /* Today's Focus */
+        .focus-section {
+            margin-bottom: 32px;
+        }
+
+        .focus-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .priority-group {
+            margin-bottom: 24px;
+        }
+
+        .priority-header {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .priority-critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .priority-important {
+            background: rgba(251, 146, 60, 0.1);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.2);
+        }
+
+        .priority-due-today {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        /* Compact Task Items */
+        .compact-task {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .compact-task:hover {
+            border-color: #2a2a2a;
+        }
+
+        .compact-task.completed {
+            opacity: 0.6;
+        }
+
+        .compact-checkbox {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .compact-checkbox.checked {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #ffffff;
+        }
+
+        .compact-timer-btn {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: none;
+            color: #4a5568;
+            cursor: pointer;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .compact-timer-btn.running {
+            color: #3b82f6;
+        }
+
+        .compact-task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .compact-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .compact-title.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .compact-badges {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .compact-badge {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        /* Badge Colors */
+        .badge-client { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .badge-case { background: rgba(236, 72, 153, 0.1); color: #f472b6; }
+        .badge-project { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
+        .badge-date { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .badge-timer { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Command Center</h1>
+            <div class="nav-links">
+                <a href="legal-tasks.html" class="nav-link">← Task Entry System</a>
+                <a href="#" class="nav-link" onclick="refreshData()">🔄 Refresh</a>
+            </div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Today's Focus -->
+                <div class="card focus-section">
+                    <h2 class="focus-title">🎯 Today's Focus</h2>
+                    <div id="todaysFocus"></div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Active Timer -->
+                <div class="card active-timer" id="activeTimerCard" style="display: none;">
+                    <h3 class="card-title">⏱ Active Timer</h3>
+                    <div class="timer-display">
+                        <div class="timer-time" id="activeTimerTime">0:00</div>
+                        <div class="timer-task" id="activeTimerTask">No active task</div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="timer-btn stop" onclick="stopActiveTimer()">Stop</button>
+                    </div>
+                </div>
+
+                <!-- Today's Stats -->
+                <div class="card">
+                    <h3 class="card-title">📈 Today's Progress</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="tasksCompleted">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalTasks">0</div>
+                            <div class="stat-label">Total Tasks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="timeLogged">0h</div>
+                            <div class="stat-label">Time Logged</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="overdueItems">0</div>
+                            <div class="stat-label">Overdue</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <h3 class="card-title">⚡ Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="showOnlyCritical()">Critical Only</button>
+                        <button class="quick-btn" onclick="showAllToday()">All Today</button>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="openTaskEntry()">+ Add Task</button>
+                        <button class="quick-btn" onclick="markAllComplete()">✓ Complete All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Reuse the same storage and timer management from the original system
+        
+        // Priority levels and their properties
+        const PRIORITIES = {
+            critical: { color: '#f87171', bg: 'rgba(248, 113, 113, 0.1)' },
+            important: { color: '#fb923c', bg: 'rgba(251, 146, 60, 0.1)' },
+            strategic: { color: '#4ade80', bg: 'rgba(74, 222, 128, 0.1)' },
+            waiting: { color: '#c084fc', bg: 'rgba(192, 132, 252, 0.1)' },
+            someday: { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' }
+        };
+
+        // Storage management (same as original)
+        class TaskStorage {
+            static get() {
+                const data = localStorage.getItem('legalTasks');
+                return data ? JSON.parse(data) : { tasks: [], nextId: 1 };
+            }
+
+            static save(data) {
+                localStorage.setItem('legalTasks', JSON.stringify(data));
+            }
+
+            static updateTask(id, updates) {
+                const data = this.get();
+                const taskIndex = data.tasks.findIndex(t => t.id === id);
+                if (taskIndex !== -1) {
+                    data.tasks[taskIndex] = { ...data.tasks[taskIndex], ...updates };
+                    this.save(data);
+                }
+            }
+        }
+
+        // Timer management (simplified for command center)
+        class TimerManager {
+            static timers = new Map();
+            static intervals = new Map();
+
+            static startTimer(taskId) {
+                // Stop any other running timers
+                this.stopAllTimers();
+
+                const now = Date.now();
+                this.timers.set(taskId, now);
+
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.timerStart = now;
+                    task.timerRunning = true;
+                    TaskStorage.save(data);
+                }
+
+                // Start interval for UI updates
+                const interval = setInterval(() => {
+                    const elapsed = this.getElapsed(taskId);
+                    this.updateActiveTimer(taskId, elapsed);
+                }, 1000);
+
+                this.intervals.set(taskId, interval);
+            }
+
+            static stopTimer(taskId) {
+                const interval = this.intervals.get(taskId);
+                if (interval) {
+                    clearInterval(interval);
+                    this.intervals.delete(taskId);
+                }
+
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task && task.timerRunning) {
+                    const elapsed = this.getElapsed(taskId);
+                    task.timerElapsed = (task.timerElapsed || 0) + elapsed;
+                    task.timerRunning = false;
+                    task.timerStart = null;
+                    task.actualTime = task.timerElapsed;
+                    TaskStorage.save(data);
+                }
+
+                this.timers.delete(taskId);
+            }
+
+            static stopAllTimers() {
+                const data = TaskStorage.get();
+                data.tasks.forEach(task => {
+                    if (task.timerRunning) {
+                        this.stopTimer(task.id);
+                    }
+                });
+            }
+
+            static toggleTimer(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                if (task.timerRunning) {
+                    this.stopTimer(taskId);
+                } else {
+                    this.startTimer(taskId);
+                }
+            }
+
+            static getElapsed(taskId) {
+                const startTime = this.timers.get(taskId);
+                if (!startTime) return 0;
+                return Math.floor((Date.now() - startTime) / 1000);
+            }
+
+            static getTotalElapsed(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return 0;
+
+                const previousElapsed = task.timerElapsed || 0;
+                const currentElapsed = task.timerRunning ? this.getElapsed(taskId) : 0;
+                return previousElapsed + currentElapsed;
+            }
+
+            static formatTime(seconds) {
+                if (seconds < 3600) {
+                    const mins = Math.floor(seconds / 60);
+                    const secs = seconds % 60;
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                } else {
+                    const hours = Math.floor(seconds / 3600);
+                    const mins = Math.floor((seconds % 3600) / 60);
+                    return `${hours}h ${mins}m`;
+                }
+            }
+
+            static updateActiveTimer(taskId, elapsed) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task) {
+                    const total = (task.timerElapsed || 0) + elapsed;
+                    document.getElementById('activeTimerTime').textContent = this.formatTime(total);
+                    document.getElementById('activeTimerTask').textContent = task.title || 'Untitled task';
+                    document.getElementById('activeTimerCard').style.display = 'block';
+                }
+            }
+
+            static restoreRunningTimers() {
+                const data = TaskStorage.get();
+                data.tasks.forEach(task => {
+                    if (task.timerRunning && task.timerStart) {
+                        this.timers.set(task.id, task.timerStart);
+                        
+                        const interval = setInterval(() => {
+                            const currentElapsed = this.getElapsed(task.id);
+                            this.updateActiveTimer(task.id, currentElapsed);
+                        }, 1000);
+                        
+                        this.intervals.set(task.id, interval);
+                    }
+                });
+            }
+        }
+
+        // Command Center UI Manager
+        class CommandCenterUI {
+            constructor() {
+                this.currentFilter = 'focus'; // focus, critical, all
+                this.init();
+            }
+
+            init() {
+                this.render();
+                TimerManager.restoreRunningTimers();
+                // Refresh every 30 seconds
+                setInterval(() => this.updateStats(), 30000);
+            }
+
+            render() {
+                this.renderTodaysFocus();
+                this.updateStats();
+                this.updateActiveTimer();
+            }
+
+            renderTodaysFocus() {
+                const container = document.getElementById('todaysFocus');
+                const data = TaskStorage.get();
+                
+                // Get today's date in various formats for matching
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                const todayFormats = [
+                    todayStr,
+                    today.toLocaleDateString(),
+                    'today',
+                    today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+                ];
+
+                // Filter tasks for today's focus
+                const focusTasks = data.tasks.filter(task => {
+                    if (task.completed) return false;
+                    
+                    // Critical or Important priority (always show)
+                    if (task.priority === 'critical' || task.priority === 'important') {
+                        return true;
+                    }
+                    
+                    // Tasks due today
+                    if (task.doDate) {
+                        return todayFormats.some(format => 
+                            task.doDate.toLowerCase().includes(format.toLowerCase())
+                        );
+                    }
+                    
+                    return false;
+                });
+
+                if (focusTasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>🎉 All clear!</h3>
+                            <p>No critical tasks or items due today</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Group tasks
+                const groups = {
+                    criticalToday: [],
+                    importantToday: [],
+                    dueToday: [],
+                    criticalNoDate: [],
+                    importantNoDate: []
+                };
+
+                focusTasks.forEach(task => {
+                    const isDueToday = task.doDate && todayFormats.some(format => 
+                        task.doDate.toLowerCase().includes(format.toLowerCase())
+                    );
+
+                    if (task.priority === 'critical') {
+                        if (isDueToday) {
+                            groups.criticalToday.push(task);
+                        } else {
+                            groups.criticalNoDate.push(task);
+                        }
+                    } else if (task.priority === 'important') {
+                        if (isDueToday) {
+                            groups.importantToday.push(task);
+                        } else {
+                            groups.importantNoDate.push(task);
+                        }
+                    } else if (isDueToday) {
+                        groups.dueToday.push(task);
+                    }
+                });
+
+                let html = '';
+
+                // Critical Due Today
+                if (groups.criticalToday.length > 0) {
+                    html += `
+                        <div class="priority-group">
+                            <div class="priority-header priority-critical">
+                                🔥 CRITICAL & DUE TODAY (${groups.criticalToday.length})
+                            </div>
+                            ${groups.criticalToday.map(task => this.renderCompactTask(task)).join('')}
+                        </div>
+                    `;
+                }
+
+                // Important Due Today
+                if (groups.importantToday.length > 0) {
+                    html += `
+                        <div class="priority-group">
+                            <div class="priority-header priority-important">
+                                ⚠️ IMPORTANT & DUE TODAY (${groups.importantToday.length})
+                            </div>
+                            ${groups.importantToday.map(task => this.renderCompactTask(task)).join('')}
+                        </div>
+                    `;
+                }
+
+                // Other Due Today
+                if (groups.dueToday.length > 0) {
+                    html += `
+                        <div class="priority-group">
+                            <div class="priority-header priority-due-today">
+                                📅 OTHER DUE TODAY (${groups.dueToday.length})
+                            </div>
+                            ${groups.dueToday.map(task => this.renderCompactTask(task)).join('')}
+                        </div>
+                    `;
+                }
+
+                // Critical No Date
+                if (groups.criticalNoDate.length > 0) {
+                    html += `
+                        <div class="priority-group">
+                            <div class="priority-header priority-critical">
+                                🔥 CRITICAL (no date) (${groups.criticalNoDate.length})
+                            </div>
+                            ${groups.criticalNoDate.map(task => this.renderCompactTask(task)).join('')}
+                        </div>
+                    `;
+                }
+
+                // Important No Date
+                if (groups.importantNoDate.length > 0) {
+                    html += `
+                        <div class="priority-group">
+                            <div class="priority-header priority-important">
+                                ⚠️ IMPORTANT (no date) (${groups.importantNoDate.length})
+                            </div>
+                            ${groups.importantNoDate.map(task => this.renderCompactTask(task)).join('')}
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = html;
+            }
+
+            renderCompactTask(task) {
+                const timerElapsed = TimerManager.getTotalElapsed(task.id);
+                const badges = [];
+                
+                if (task.client) badges.push(`<span class="compact-badge badge-client">@${task.client}</span>`);
+                if (task.case) badges.push(`<span class="compact-badge badge-case">#${task.case}</span>`);
+                if (task.project) badges.push(`<span class="compact-badge badge-project">^${task.project}</span>`);
+                if (task.doDate) badges.push(`<span class="compact-badge badge-date">📅${task.doDate}</span>`);
+                if (timerElapsed > 0) badges.push(`<span class="compact-badge badge-timer">⏲${TimerManager.formatTime(timerElapsed)}</span>`);
+
+                return `
+                    <div class="compact-task ${task.completed ? 'completed' : ''}" data-task-id="${task.id}">
+                        <button class="compact-checkbox ${task.completed ? 'checked' : ''}" 
+                                onclick="toggleTaskCompletion(${task.id})">
+                            ${task.completed ? '✓' : ''}
+                        </button>
+                        <button class="compact-timer-btn ${task.timerRunning ? 'running' : ''}" 
+                                onclick="toggleTimer(${task.id})">
+                            ${task.timerRunning ? '⏸' : '▶'}
+                        </button>
+                        <div class="compact-task-content">
+                            <div class="compact-title ${task.completed ? 'completed' : ''}">${task.title || 'Untitled task'}</div>
+                            <div class="compact-badges">${badges.join('')}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            updateStats() {
+                const data = TaskStorage.get();
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                
+                // Today's completed tasks
+                const completedToday = data.tasks.filter(task => 
+                    task.completed && 
+                    task.completedDate && 
+                    task.completedDate.startsWith(todayStr)
+                ).length;
+
+                // Total tasks (not completed)
+                const totalActiveTasks = data.tasks.filter(task => !task.completed).length;
+
+                // Time logged today
+                const totalTimeToday = data.tasks.reduce((total, task) => {
+                    return total + (task.timerElapsed || 0);
+                }, 0);
+
+                // Overdue items
+                const overdue = data.tasks.filter(task => {
+                    if (task.completed || !task.doDate) return false;
+                    const taskDate = new Date(task.doDate);
+                    return taskDate < today;
+                }).length;
+
+                document.getElementById('tasksCompleted').textContent = completedToday;
+                document.getElementById('totalTasks').textContent = totalActiveTasks;
+                document.getElementById('timeLogged').textContent = TimerManager.formatTime(totalTimeToday);
+                document.getElementById('overdueItems').textContent = overdue;
+            }
+
+            updateActiveTimer() {
+                const data = TaskStorage.get();
+                const runningTask = data.tasks.find(task => task.timerRunning);
+                
+                if (runningTask) {
+                    document.getElementById('activeTimerCard').style.display = 'block';
+                } else {
+                    document.getElementById('activeTimerCard').style.display = 'none';
+                }
+            }
+        }
+
+        // Global functions
+        function refreshData() {
+            window.location.reload();
+        }
+
+        function openTaskEntry() {
+            window.open('legal-tasks.html', '_blank');
+        }
+
+        function toggleTaskCompletion(taskId) {
+            const data = TaskStorage.get();
+            const task = data.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const updates = { 
+                completed: !task.completed
+            };
+            
+            if (!task.completed) {
+                updates.completedDate = new Date().toISOString();
+            } else {
+                updates.completedDate = null;
+            }
+
+            TaskStorage.updateTask(taskId, updates);
+            commandCenter.render();
+        }
+
+        function toggleTimer(taskId) {
+            TimerManager.toggleTimer(taskId);
+            commandCenter.render();
+        }
+
+        function stopActiveTimer() {
+            const data = TaskStorage.get();
+            const runningTask = data.tasks.find(task => task.timerRunning);
+            if (runningTask) {
+                TimerManager.stopTimer(runningTask.id);
+                commandCenter.render();
+            }
+        }
+
+        function showOnlyCritical() {
+            // Future enhancement
+            alert('Feature coming soon!');
+        }
+
+        function showAllToday() {
+            // Future enhancement
+            alert('Feature coming soon!');
+        }
+
+        function markAllComplete() {
+            if (confirm('Mark all visible tasks as complete?')) {
+                // Future enhancement
+                alert('Feature coming soon!');
+            }
+        }
+
+        // Initialize the Command Center
+        const commandCenter = new CommandCenterUI();
+    </script>
+</body>
+</html>

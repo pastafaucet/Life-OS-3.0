@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Task Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Navigation */
+        .header {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 4px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .view-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+        }
+
+        .view-tab.active {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .view-tab:not(.active):hover {
+            color: #ffffff;
+            background: #2a2a2a;
+        }
+
+        /* View Containers */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* Task Entry View Styles */
+        .entry-section {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .cheat-sheet {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-family: 'SF Mono', Consolas, monospace;
+            background: rgba(107, 114, 128, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(107, 114, 128, 0.1);
+        }
+
+        .cheat-sheet-title {
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .cheat-sheet-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 24px;
+            align-items: center;
+        }
+
+        .cheat-item {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .cheat-symbol {
+            font-weight: 600;
+            min-width: 16px;
+        }
+
+        .cheat-item.type-item { color: #9ca3af; }
+        .cheat-item.client-item { color: #60a5fa; }
+        .cheat-item.case-item { color: #f472b6; }
+        .cheat-item.project-item { color: #4ade80; }
+        .cheat-item.priority-item { color: #ef4444; }
+        .cheat-item.date-item { color: #fbbf24; }
+        .cheat-item.hours-item { color: #a855f7; }
+
+        .cheat-symbol, .cheat-description {
+            font-weight: 600;
+        }
+
+        .task-input {
+            width: 100%;
+            background-color: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .task-input::placeholder {
+            color: #6b7280;
+        }
+
+        .task-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Task Item */
+        .task-item {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            border-color: #2a2a2a;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .checkbox-button {
+            width: 16px;
+            height: 16px;
+            margin-right: 15px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .checkbox-button:hover {
+            border-color: #6b7280;
+        }
+
+        .checkbox-button.checked {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #ffffff;
+        }
+
+        .timer-button {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            background: none;
+            border: none;
+            color: #4a5568;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .timer-button.running {
+            color: #3b82f6;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            flex: 1;
+        }
+
+        .task-title:hover {
+            color: #3b82f6;
+        }
+
+        .task-item.completed .task-title {
+            opacity: 0.50;
+            text-decoration: line-through;
+        }
+
+        .task-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .badge:hover {
+            transform: translateY(-1px);
+            border-color: currentColor;
+        }
+
+        .task-item.completed .badge:not(.timer-badge) {
+            opacity: 0.65;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Badge styles */
+        .type-task { background-color: rgba(107, 114, 128, 0.1); color: #9ca3af; }
+        .type-event { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .type-deadline { background-color: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+        .priority-critical { background-color: rgba(248, 113, 113, 0.1); color: #f87171; }
+        .priority-important { background-color: rgba(251, 146, 60, 0.1); color: #fb923c; }
+        .priority-strategic { background-color: rgba(74, 222, 128, 0.1); color: #4ade80; }
+        .priority-waiting { background-color: rgba(192, 132, 252, 0.1); color: #c084fc; }
+        .priority-someday { background-color: rgba(167, 139, 250, 0.1); color: #a78bfa; }
+
+        .client-badge { background-color: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .case-badge { background-color: rgba(236, 72, 153, 0.1); color: #f472b6; }
+        .project-badge { background-color: rgba(34, 197, 94, 0.1); color: #4ade80; }
+        .date-badge { background-color: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .hours-badge { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .timer-badge { background-color: rgba(168, 85, 247, 0.1); color: #a855f7; }
+
+        .badge.empty {
+            background-color: rgba(107, 114, 128, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .badge.empty:hover {
+            border-color: currentColor;
+        }
+
+        /* Command Center Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .active-timer {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1));
+            border-color: #3b82f6;
+        }
+
+        .timer-display {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .timer-time {
+            font-size: 36px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .timer-task {
+            font-size: 16px;
+            color: #9ca3af;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .timer-btn.stop {
+            background: #ef4444;
+            color: white;
+        }
+
+        .timer-btn.stop:hover {
+            background: #dc2626;
+        }
+
+        .focus-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .priority-group {
+            margin-bottom: 24px;
+        }
+
+        .priority-header {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .priority-critical {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .priority-important {
+            background: rgba(251, 146, 60, 0.1);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.2);
+        }
+
+        .priority-due-today {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .compact-task {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .compact-task:hover {
+            border-color: #2a2a2a;
+        }
+
+        .compact-task.completed {
+            opacity: 0.6;
+        }
+
+        /* Add spacing between different task types */
+        .type-separator {
+            height: 12px;
+            margin: 8px 0;
+        }
+
+        /* Add spacing between different task types */
+        .compact-task[data-type="deadline"]:not(.compact-task[data-type="event"] + .compact-task[data-type="deadline"]) {
+            margin-top: 16px;
+        }
+        
+        .compact-task[data-type="task"]:not(.compact-task[data-type="deadline"] + .compact-task[data-type="task"]):not(.compact-task[data-type="event"] + .compact-task[data-type="task"]) {
+            margin-top: 16px;
+        }
+
+        /* Simpler approach using CSS that works with our data attributes */
+        .compact-task[data-type="deadline"]:first-of-type,
+        .compact-task[data-type="task"]:first-of-type {
+            margin-top: 16px;
+        }
+
+        .compact-checkbox {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .compact-checkbox.checked {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #ffffff;
+        }
+
+        .compact-timer-btn {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: none;
+            color: #4a5568;
+            cursor: pointer;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .compact-timer-btn.running {
+            color: #3b82f6;
+        }
+
+        .compact-task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .compact-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .compact-title.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .compact-badges {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .compact-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .compact-badge:hover {
+            transform: translateY(-1px);
+            border-color: currentColor;
+        }
+
+        .compact-badge.empty {
+            background-color: rgba(107, 114, 128, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .compact-badge.empty:hover {
+            border-color: currentColor;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .quick-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        .badge-client { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .badge-case { background: rgba(236, 72, 153, 0.1); color: #f472b6; }
+        .badge-project { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
+        .badge-date { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .badge-hours { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .badge-timer { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+
+        /* Inline Edit */
+        .inline-edit {
+            background-color: #1f2937;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            padding: 2px 8px;
+            color: #ffffff;
+            font-size: inherit;
+            font-family: inherit;
+            outline: none;
+            min-width: 80px;
+        }
+
+        /* Timer Modal */
+        .timer-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .timer-modal {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 24px;
+            width: 500px;
+            max-width: 90vw;
+        }
+
+        .timer-modal h3 {
+            margin: 0 0 20px 0;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .timer-modal-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .timer-modal-row label {
+            flex: 0 0 80px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .timer-modal-row input {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            min-width: 0;
+        }
+
+        .timer-modal-row input:focus {
+            border-color: #3b82f6;
+        }
+
+        .quick-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .quick-button {
+            padding: 6px 12px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .quick-button:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .timer-total {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 20px;
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .timer-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .timer-modal-actions button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .timer-modal-actions .save-btn {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .timer-modal-actions .save-btn:hover {
+            background: #2563eb;
+        }
+
+        .timer-modal-actions .cancel-btn {
+            background: #1f2937;
+            color: #9ca3af;
+            border: 1px solid #374151;
+        }
+
+        .timer-modal-actions .cancel-btn:hover {
+            background: #374151;
+        }
+
+        .timer-modal-actions .clear-btn {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .timer-modal-actions .clear-btn:hover {
+            background: #dc2626;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .task-item {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ Legal Task Manager</h1>
+            <div class="view-tabs">
+                <button class="view-tab active" onclick="showView('command-center')">📊 Command Center</button>
+                <button class="view-tab" onclick="showView('task-entry')">✏️ Task Entry</button>
+            </div>
+        </div>
+
+        <!-- Command Center View -->
+        <div class="view active" id="command-center-view">
+            <div class="dashboard-grid">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Today's Focus -->
+                    <div class="card focus-section">
+                        <h2 class="focus-title">🎯 Today's Focus</h2>
+                        <div id="todaysFocus"></div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Active Timer -->
+                    <div class="card active-timer" id="activeTimerCard" style="display: none;">
+                        <h3 class="card-title">⏱ Active Timer</h3>
+                        <div class="timer-display">
+                            <div class="timer-time" id="activeTimerTime">0:00</div>
+                            <div class="timer-task" id="activeTimerTask">No active task</div>
+                        </div>
+                        <div class="timer-controls">
+                            <button class="timer-btn stop" onclick="stopActiveTimer()">Stop</button>
+                        </div>
+                    </div>
+
+                    <!-- Today's Stats -->
+                    <div class="card">
+                        <h3 class="card-title">📈 Today's Progress</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="tasksCompleted">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalTasks">0</div>
+                                <div class="stat-label">Total Tasks</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="timeLogged">0h</div>
+                                <div class="stat-label">Time Logged</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="overdueItems">0</div>
+                                <div class="stat-label">Overdue</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <h3 class="card-title">⚡ Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="showView('task-entry')">+ Add Task</button>
+                            <button class="quick-btn" onclick="refreshData()">🔄 Refresh</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Entry View -->
+        <div class="view" id="task-entry-view">
+            <div class="entry-section">
+                <div class="cheat-sheet">
+                    <div class="cheat-sheet-title">Quick Entry Commands:</div>
+                    <div class="cheat-sheet-grid">
+                        <div class="cheat-item type-item">
+                            <span class="cheat-symbol">~</span>
+                            <span class="cheat-description">type</span>
+                        </div>
+                        <div class="cheat-item client-item">
+                            <span class="cheat-symbol">@</span>
+                            <span class="cheat-description">client</span>
+                        </div>
+                        <div class="cheat-item case-item">
+                            <span class="cheat-symbol">#</span>
+                            <span class="cheat-description">case</span>
+                        </div>
+                        <div class="cheat-item project-item">
+                            <span class="cheat-symbol">^</span>
+                            <span class="cheat-description">project</span>
+                        </div>
+                        <div class="cheat-item priority-item">
+                            <span class="cheat-symbol">!</span>
+                            <span class="cheat-description">priority</span>
+                        </div>
+                        <div class="cheat-item date-item">
+                            <span class="cheat-symbol">📅</span>
+                            <span class="cheat-description">date/time</span>
+                        </div>
+                        <div class="cheat-item hours-item">
+                            <span class="cheat-symbol">⏱</span>
+                            <span class="cheat-description">hours</span>
+                        </div>
+                    </div>
+                </div>
+                <input 
+                    type="text" 
+                    class="task-input" 
+                    placeholder="Enter task..."
+                    id="taskInput"
+                >
+            </div>
+            
+            <div class="task-list" id="taskList"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentView = 'command-center';
+
+        // Priority levels
+        const PRIORITIES = {
+            critical: { color: '#f87171', bg: 'rgba(248, 113, 113, 0.1)' },
+            important: { color: '#fb923c', bg: 'rgba(251, 146, 60, 0.1)' },
+            strategic: { color: '#4ade80', bg: 'rgba(74, 222, 128, 0.1)' },
+            waiting: { color: '#c084fc', bg: 'rgba(192, 132, 252, 0.1)' },
+            someday: { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' }
+        };
+
+        const PRIORITY_ORDER = ['critical', 'important', 'strategic', 'waiting', 'someday'];
+
+        // Storage management
+        class TaskStorage {
+            static get() {
+                const data = localStorage.getItem('legalTasks');
+                return data ? JSON.parse(data) : { tasks: [], nextId: 1 };
+            }
+
+            static save(data) {
+                localStorage.setItem('legalTasks', JSON.stringify(data));
+            }
+
+            static addTask(task) {
+                const data = this.get();
+                task.id = data.nextId++;
+                data.tasks.push(task);
+                this.save(data);
+                return task;
+            }
+
+            static updateTask(id, updates) {
+                const data = this.get();
+                const taskIndex = data.tasks.findIndex(t => t.id === id);
+                if (taskIndex !== -1) {
+                    data.tasks[taskIndex] = { ...data.tasks[taskIndex], ...updates };
+                    this.save(data);
+                }
+            }
+
+            static deleteTask(id) {
+                const data = this.get();
+                data.tasks = data.tasks.filter(t => t.id !== id);
+                this.save(data);
+            }
+        }
+
+        // Timer management
+        class TimerManager {
+            static timers = new Map();
+            static intervals = new Map();
+
+            static startTimer(taskId) {
+                this.stopAllTimers();
+                const now = Date.now();
+                this.timers.set(taskId, now);
+
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.timerStart = now;
+                    task.timerRunning = true;
+                    TaskStorage.save(data);
+                }
+
+                const interval = setInterval(() => {
+                    const elapsed = this.getElapsed(taskId);
+                    this.updateActiveTimer(taskId, elapsed);
+                }, 1000);
+
+                this.intervals.set(taskId, interval);
+            }
+
+            static stopTimer(taskId) {
+                const interval = this.intervals.get(taskId);
+                if (interval) {
+                    clearInterval(interval);
+                    this.intervals.delete(taskId);
+                }
+
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task && task.timerRunning) {
+                    const elapsed = this.getElapsed(taskId);
+                    task.timerElapsed = (task.timerElapsed || 0) + elapsed;
+                    task.timerRunning = false;
+                    task.timerStart = null;
+                    task.actualTime = task.timerElapsed;
+                    TaskStorage.save(data);
+                }
+
+                this.timers.delete(taskId);
+            }
+
+            static stopAllTimers() {
+                const data = TaskStorage.get();
+                data.tasks.forEach(task => {
+                    if (task.timerRunning) {
+                        this.stopTimer(task.id);
+                    }
+                });
+            }
+
+            static toggleTimer(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                if (task.timerRunning) {
+                    this.stopTimer(taskId);
+                } else {
+                    this.startTimer(taskId);
+                }
+            }
+
+            static getElapsed(taskId) {
+                const startTime = this.timers.get(taskId);
+                if (!startTime) return 0;
+                return Math.floor((Date.now() - startTime) / 1000);
+            }
+
+            static getTotalElapsed(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return 0;
+
+                const previousElapsed = task.timerElapsed || 0;
+                const currentElapsed = task.timerRunning ? this.getElapsed(taskId) : 0;
+                return previousElapsed + currentElapsed;
+            }
+
+            static formatTime(seconds) {
+                if (seconds < 3600) {
+                    const mins = Math.floor(seconds / 60);
+                    const secs = seconds % 60;
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                } else {
+                    const hours = Math.floor(seconds / 3600);
+                    const mins = Math.floor((seconds % 3600) / 60);
+                    return `${hours}h ${mins}m`;
+                }
+            }
+
+            static updateActiveTimer(taskId, elapsed) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task) {
+                    const total = (task.timerElapsed || 0) + elapsed;
+                    const timeEl = document.getElementById('activeTimerTime');
+                    const taskEl = document.getElementById('activeTimerTask');
+                    const cardEl = document.getElementById('activeTimerCard');
+                    
+                    if (timeEl) timeEl.textContent = this.formatTime(total);
+                    if (taskEl) taskEl.textContent = task.title || 'Untitled task';
+                    if (cardEl) cardEl.style.display = 'block';
+                }
+            }
+
+            static restoreRunningTimers() {
+                const data = TaskStorage.get();
+                data.tasks.forEach(task => {
+                    if (task.timerRunning && task.timerStart) {
+                        this.timers.set(task.id, task.timerStart);
+                        
+                        const interval = setInterval(() => {
+                            const currentElapsed = this.getElapsed(task.id);
+                            this.updateActiveTimer(task.id, currentElapsed);
+                        }, 1000);
+                        
+                        this.intervals.set(task.id, interval);
+                    }
+                });
+            }
+        }
+
+        // Task parser
+        class TaskParser {
+            static parse(input) {
+                const task = {
+                    originalInput: input,
+                    type: 'task',
+                    title: '',
+                    client: '',
+                    case: '',
+                    project: '',
+                    priority: 'strategic',
+                    doDate: '',
+                    hours: '',
+                    timerStart: null,
+                    timerElapsed: 0,
+                    timerRunning: false,
+                    actualTime: 0,
+                    completed: false
+                };
+
+                let remaining = input;
+
+                remaining = this.extractType(remaining, task);
+                remaining = this.extractClient(remaining, task);
+                remaining = this.extractCase(remaining, task);
+                remaining = this.extractProject(remaining, task);
+                remaining = this.extractPriority(remaining, task);
+                remaining = this.extractHours(remaining, task);
+
+                const dateResult = this.parseDateTime(remaining);
+                if (dateResult.date) {
+                    task.doDate = dateResult.date;
+                    remaining = dateResult.remaining;
+                }
+
+                task.title = remaining.trim();
+                return task;
+            }
+
+            static parseDateTime(input) {
+                const patterns = [
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?\s+\d{1,2}:\d{2}\s*(?:am|pm)?)\s*$/i,
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?\s+\d{1,2}\s*(?:am|pm))\s*$/i,
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?)\s*$/i,
+                    /\b(\d{1,2}:\d{2}\s*(?:am|pm)?)\s*$/i,
+                    /\b(\d{1,2}\s*(?:am|pm))\s*$/i,
+                    /\b((?:today|tomorrow|yesterday|monday|tuesday|wednesday|thursday|friday|saturday|sunday)(?:\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)?)?)\s*$/i
+                ];
+
+                for (const pattern of patterns) {
+                    const match = input.match(pattern);
+                    if (match) {
+                        let dateValue = match[1];
+                        
+                        // Convert relative terms to actual dates
+                        dateValue = this.convertRelativeDate(dateValue);
+                        
+                        return {
+                            date: dateValue,
+                            remaining: input.substring(0, match.index).trim()
+                        };
+                    }
+                }
+
+                return { date: '', remaining: input };
+            }
+
+            static convertRelativeDate(dateString) {
+                const today = new Date();
+                const lowerDate = dateString.toLowerCase();
+                
+                if (lowerDate.startsWith('today')) {
+                    const timeMatch = dateString.match(/\d{1,2}(?::\d{2})?\s*(?:am|pm)?/i);
+                    const todayStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+                    return timeMatch ? `${todayStr} ${timeMatch[0]}` : todayStr;
+                }
+                
+                if (lowerDate.startsWith('tomorrow')) {
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(today.getDate() + 1);
+                    const timeMatch = dateString.match(/\d{1,2}(?::\d{2})?\s*(?:am|pm)?/i);
+                    const tomorrowStr = `${tomorrow.getMonth() + 1}/${tomorrow.getDate()}/${tomorrow.getFullYear()}`;
+                    return timeMatch ? `${tomorrowStr} ${timeMatch[0]}` : tomorrowStr;
+                }
+                
+                if (lowerDate.startsWith('yesterday')) {
+                    const yesterday = new Date(today);
+                    yesterday.setDate(today.getDate() - 1);
+                    const timeMatch = dateString.match(/\d{1,2}(?::\d{2})?\s*(?:am|pm)?/i);
+                    const yesterdayStr = `${yesterday.getMonth() + 1}/${yesterday.getDate()}/${yesterday.getFullYear()}`;
+                    return timeMatch ? `${yesterdayStr} ${timeMatch[0]}` : yesterdayStr;
+                }
+                
+                // Handle weekday names
+                const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                const targetDay = weekdays.findIndex(day => lowerDate.startsWith(day));
+                
+                if (targetDay !== -1) {
+                    const targetDate = new Date(today);
+                    const currentDay = today.getDay();
+                    const daysUntilTarget = (targetDay - currentDay + 7) % 7;
+                    const daysToAdd = daysUntilTarget === 0 ? 7 : daysUntilTarget; // Next occurrence
+                    
+                    targetDate.setDate(today.getDate() + daysToAdd);
+                    const timeMatch = dateString.match(/\d{1,2}(?::\d{2})?\s*(?:am|pm)?/i);
+                    const targetStr = `${targetDate.getMonth() + 1}/${targetDate.getDate()}/${targetDate.getFullYear()}`;
+                    return timeMatch ? `${targetStr} ${timeMatch[0]}` : targetStr;
+                }
+                
+                // Return as-is for absolute dates
+                return dateString;
+            }
+
+            static extractType(input, task) {
+                const typePattern = /~(task|event|deadline)\b/i;
+                const match = input.match(typePattern);
+                if (match) {
+                    task.type = match[1].toLowerCase();
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractClient(input, task) {
+                return this.extractHashCommand(input, '@', (value) => {
+                    task.client = value;
+                });
+            }
+
+            static extractCase(input, task) {
+                return this.extractHashCommand(input, '#', (value) => {
+                    task.case = value;
+                });
+            }
+
+            static extractProject(input, task) {
+                return this.extractHashCommand(input, '\\^', (value) => {
+                    task.project = value;
+                });
+            }
+
+            static extractPriority(input, task) {
+                const priorityPattern = /!(critical|important|strategic|waiting|someday)\b/i;
+                const match = input.match(priorityPattern);
+                if (match) {
+                    task.priority = match[1].toLowerCase();
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractHours(input, task) {
+                const hoursPattern = /\b(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours?|m|min|mins?)\b/i;
+                const match = input.match(hoursPattern);
+                if (match) {
+                    const value = match[1];
+                    const unit = match[2].toLowerCase();
+                    
+                    if (unit.startsWith('h')) {
+                        task.hours = value + 'h';
+                    } else {
+                        task.hours = value + 'm';
+                    }
+                    
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractHashCommand(input, symbol, setter) {
+                const symbolIndex = input.indexOf(symbol === '\\^' ? '^' : symbol);
+                if (symbolIndex === -1) return input;
+                
+                let endIndex = input.length;
+                let valueStart = symbolIndex + 1;
+                
+                while (valueStart < input.length && input[valueStart] === ' ') {
+                    valueStart++;
+                }
+                
+                for (let i = valueStart; i < input.length; i++) {
+                    const char = input[i];
+                    const restOfString = input.substring(i);
+                    
+                    if (['@', '#', '^', '!', '~'].includes(char)) {
+                        endIndex = i;
+                        break;
+                    }
+                    
+                    if (this.looksLikeDateTime(restOfString)) {
+                        endIndex = i;
+                        break;
+                    }
+                }
+                
+                const value = input.substring(valueStart, endIndex).trim();
+                setter(value);
+                
+                return (input.substring(0, symbolIndex) + ' ' + input.substring(endIndex)).trim();
+            }
+            
+            static looksLikeDateTime(str) {
+                const patterns = [
+                    /^\d{1,2}[-\/]\d{1,2}/,
+                    /^\d{1,2}:\d{2}/,
+                    /^\d{1,2}(?:am|pm)/i,
+                    /^(today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i
+                ];
+                
+                return patterns.some(pattern => pattern.test(str));
+            }
+        }
+
+        // Date display helper
+        class DateDisplay {
+            static formatDateForDisplay(dateString) {
+                if (!dateString) return '';
+                
+                const today = new Date();
+                const todayStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+                
+                const yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                const yesterdayStr = `${yesterday.getMonth() + 1}/${yesterday.getDate()}/${yesterday.getFullYear()}`;
+                
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+                const tomorrowStr = `${tomorrow.getMonth() + 1}/${tomorrow.getDate()}/${tomorrow.getFullYear()}`;
+                
+                // Extract just the date part (before any time)
+                const dateOnly = dateString.split(' ')[0];
+                
+                if (dateOnly === todayStr) {
+                    // Keep any time portion
+                    const timePart = dateString.includes(' ') ? ' ' + dateString.split(' ').slice(1).join(' ') : '';
+                    return 'today' + timePart;
+                }
+                
+                if (dateOnly === yesterdayStr) {
+                    const timePart = dateString.includes(' ') ? ' ' + dateString.split(' ').slice(1).join(' ') : '';
+                    return 'yesterday' + timePart;
+                }
+                
+                if (dateOnly === tomorrowStr) {
+                    const timePart = dateString.includes(' ') ? ' ' + dateString.split(' ').slice(1).join(' ') : '';
+                    return 'tomorrow' + timePart;
+                }
+                
+                // Return the full date for other dates
+                return dateString;
+            }
+        }
+
+        // UI Manager
+        class UIManager {
+            constructor() {
+                this.taskInput = document.getElementById('taskInput');
+                this.taskList = document.getElementById('taskList');
+                this.setupEventListeners();
+                this.render();
+                TimerManager.restoreRunningTimers();
+            }
+
+            setupEventListeners() {
+                if (this.taskInput) {
+                    this.taskInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter' && this.taskInput.value.trim()) {
+                            this.addTask();
+                        }
+                    });
+                }
+            }
+
+            addTask() {
+                const input = this.taskInput.value.trim();
+                if (!input) return;
+
+                const task = TaskParser.parse(input);
+                TaskStorage.addTask(task);
+                this.taskInput.value = '';
+                this.render();
+                this.renderCommandCenter();
+            }
+
+            render() {
+                if (!this.taskList) return;
+                
+                const data = TaskStorage.get();
+                this.taskList.innerHTML = '';
+                
+                data.tasks.forEach(task => {
+                    this.taskList.appendChild(this.createTaskElement(task));
+                });
+            }
+
+            createTaskElement(task) {
+                const div = document.createElement('div');
+                div.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                const header = document.createElement('div');
+                header.className = 'task-header';
+                
+                const checkboxBtn = document.createElement('button');
+                checkboxBtn.className = `checkbox-button ${task.completed ? 'checked' : ''}`;
+                checkboxBtn.innerHTML = task.completed ? '✓' : '';
+                checkboxBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.toggleTaskCompletion(task.id);
+                };
+                header.appendChild(checkboxBtn);
+                
+                const timerBtn = document.createElement('button');
+                timerBtn.className = `timer-button ${task.timerRunning ? 'running' : ''}`;
+                timerBtn.innerHTML = task.timerRunning ? '⏸' : '▶';
+                timerBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    TimerManager.toggleTimer(task.id);
+                    this.render();
+                    this.renderCommandCenter();
+                };
+                header.appendChild(timerBtn);
+                
+                const title = document.createElement('div');
+                title.className = 'task-title';
+                title.textContent = task.title || 'Untitled task';
+                title.style.flex = '1';
+                title.onclick = () => this.editTitle(task.id, title);
+                header.appendChild(title);
+                
+                div.appendChild(header);
+
+                const badges = document.createElement('div');
+                badges.className = 'task-badges';
+
+                badges.appendChild(this.createBadge(
+                    (task.type || 'task'),
+                    `badge type-badge type-${task.type || 'task'}`,
+                    task.completed ? null : () => this.cycleType(task.id)
+                ));
+                
+                badges.appendChild(this.createBadge(
+                    `!${task.priority}`,
+                    `badge priority-badge priority-${task.priority}`,
+                    task.completed ? null : () => this.cyclePriority(task.id)
+                ));
+
+                badges.appendChild(this.createBadge(
+                    task.client ? `@${task.client}` : `@ --`,
+                    task.client ? 'badge client-badge' : 'badge client-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'client', badge)
+                ));
+
+                badges.appendChild(this.createBadge(
+                    task.case ? `#${task.case}` : `# --`,
+                    task.case ? 'badge case-badge' : 'badge case-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'case', badge)
+                ));
+
+                badges.appendChild(this.createBadge(
+                    task.project ? `^${task.project}` : `^ --`,
+                    task.project ? 'badge project-badge' : 'badge project-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'project', badge)
+                ));
+
+                badges.appendChild(this.createBadge(
+                    task.doDate ? `📅 ${DateDisplay.formatDateForDisplay(task.doDate)}` : `📅 --`,
+                    task.doDate ? 'badge date-badge' : 'badge date-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'doDate', badge)
+                ));
+
+                badges.appendChild(this.createBadge(
+                    task.hours ? `⏱ ${task.hours}` : `⏱ --`,
+                    task.hours ? 'badge hours-badge' : 'badge hours-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'hours', badge)
+                ));
+
+                const totalElapsed = TimerManager.getTotalElapsed(task.id);
+                const timerBadge = this.createBadge(
+                    totalElapsed > 0 ? `⏲ ${TimerManager.formatTime(totalElapsed)}` : `⏲ --`,
+                    totalElapsed > 0 ? 'badge timer-badge' : 'badge timer-badge empty',
+                    (badge) => this.showTimerModal(task.id)
+                );
+                timerBadge.setAttribute('data-timer-id', task.id);
+                badges.appendChild(timerBadge);
+
+                div.appendChild(badges);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '✕';
+                deleteBtn.onclick = () => {
+                    if (task.timerRunning) {
+                        TimerManager.stopTimer(task.id);
+                    }
+                    TaskStorage.deleteTask(task.id);
+                    this.render();
+                    this.renderCommandCenter();
+                };
+                div.appendChild(deleteBtn);
+
+                return div;
+            }
+
+            createBadge(text, className, onClick) {
+                const badge = document.createElement('span');
+                badge.className = className;
+                badge.textContent = text;
+                if (onClick) {
+                    badge.onclick = () => onClick(badge);
+                }
+                return badge;
+            }
+
+            toggleTaskCompletion(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const updates = { 
+                    completed: !task.completed
+                };
+                
+                if (!task.completed) {
+                    updates.completedDate = new Date().toISOString();
+                } else {
+                    updates.completedDate = null;
+                }
+
+                TaskStorage.updateTask(taskId, updates);
+                this.render();
+                this.renderCommandCenter();
+            }
+
+            editTitle(taskId, element) {
+                const currentText = element.textContent;
+                const input = this.createInlineEdit(currentText, (value) => {
+                    if (value.trim()) {
+                        TaskStorage.updateTask(taskId, { title: value.trim() });
+                        this.render();
+                        this.renderCommandCenter();
+                    } else {
+                        element.textContent = currentText;
+                    }
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            editBadge(taskId, field, element) {
+                const currentValue = element.textContent.replace(/[@#^📅⏱]\s*/, '').replace('--', '').trim();
+                
+                const input = this.createInlineEdit(currentValue, (value) => {
+                    TaskStorage.updateTask(taskId, { [field]: value.trim() });
+                    this.render();
+                    this.renderCommandCenter();
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            cycleType(taskId) {
+                const types = ['task', 'event', 'deadline'];
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const currentType = task.type || 'task';
+                const currentIndex = types.indexOf(currentType);
+                const nextIndex = (currentIndex + 1) % types.length;
+                
+                TaskStorage.updateTask(taskId, { type: types[nextIndex] });
+                this.render();
+                this.renderCommandCenter();
+            }
+
+            cyclePriority(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const currentIndex = PRIORITY_ORDER.indexOf(task.priority);
+                const nextIndex = (currentIndex + 1) % PRIORITY_ORDER.length;
+                
+                TaskStorage.updateTask(taskId, { priority: PRIORITY_ORDER[nextIndex] });
+                this.render();
+                this.renderCommandCenter();
+            }
+
+            createInlineEdit(value, onSave) {
+                const input = document.createElement('input');
+                input.className = 'inline-edit';
+                input.value = value;
+                
+                const save = () => {
+                    input.removeEventListener('blur', save);
+                    onSave(input.value);
+                };
+                
+                input.addEventListener('blur', save);
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        save();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        input.removeEventListener('blur', save);
+                        onSave(value);
+                    }
+                });
+                
+                const testSpan = document.createElement('span');
+                testSpan.style.visibility = 'hidden';
+                testSpan.style.position = 'absolute';
+                testSpan.style.fontSize = getComputedStyle(input).fontSize;
+                testSpan.textContent = value || 'MM';
+                document.body.appendChild(testSpan);
+                input.style.width = Math.max(80, testSpan.offsetWidth + 20) + 'px';
+                document.body.removeChild(testSpan);
+                
+                return input;
+            }
+
+            createCompactBadge(text, className, onClick) {
+                const badge = document.createElement('span');
+                badge.className = className;
+                badge.textContent = text;
+                badge.style.cursor = 'pointer';
+                if (onClick) {
+                    badge.onclick = () => onClick(badge);
+                }
+                return badge;
+            }
+
+            editCompactTitle(taskId, element) {
+                const currentText = element.textContent;
+                const input = this.createInlineEdit(currentText, (value) => {
+                    if (value.trim()) {
+                        TaskStorage.updateTask(taskId, { title: value.trim() });
+                        this.render();
+                        this.renderCommandCenter();
+                    } else {
+                        element.textContent = currentText;
+                    }
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            editCompactBadge(taskId, field, element) {
+                const currentValue = element.textContent.replace(/[@#^📅⏱]/, '').trim();
+                
+                const input = this.createInlineEdit(currentValue, (value) => {
+                    TaskStorage.updateTask(taskId, { [field]: value.trim() });
+                    this.render();
+                    this.renderCommandCenter();
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            createPriorityGroup(title, count, headerClass, tasks) {
+                const group = document.createElement('div');
+                group.className = 'priority-group';
+                
+                const header = document.createElement('div');
+                header.className = `priority-header ${headerClass}`;
+                header.textContent = `${title} (${count})`;
+                group.appendChild(header);
+                
+                let lastType = null;
+                tasks.forEach((task, index) => {
+                    const currentType = task.type || 'task';
+                    
+                    // Add separator if type changes and it's not the first item
+                    if (index > 0 && lastType && currentType !== lastType) {
+                        const separator = document.createElement('div');
+                        separator.className = 'type-separator';
+                        group.appendChild(separator);
+                    }
+                    
+                    group.appendChild(this.renderCompactTask(task));
+                    lastType = currentType;
+                });
+                
+                return group;
+            }
+
+            showTimerModal(taskId) {
+                // Timer modal functionality would go here
+                alert('Timer modal functionality coming soon!');
+            }
+
+            renderCommandCenter() {
+                if (currentView !== 'command-center') return;
+                
+                const container = document.getElementById('todaysFocus');
+                if (!container) return;
+                
+                const data = TaskStorage.get();
+                
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                const todayFormats = [
+                    todayStr,
+                    today.toLocaleDateString(),
+                    'today',
+                    today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+                ];
+
+                const focusTasks = data.tasks.filter(task => {
+                    if (task.completed) return false;
+                    
+                    if (task.priority === 'critical' || task.priority === 'important') {
+                        return true;
+                    }
+                    
+                    if (task.doDate) {
+                        // Check if it's due today
+                        const isDueToday = todayFormats.some(format => 
+                            task.doDate.toLowerCase().includes(format.toLowerCase())
+                        );
+                        
+                        if (isDueToday) return true;
+                        
+                        // Check if it's overdue (parse the date and compare)
+                        try {
+                            let taskDate = new Date(task.doDate);
+                            
+                            // Handle various date formats
+                            if (isNaN(taskDate)) {
+                                // Try parsing common formats like MM/DD/YYYY
+                                const parts = task.doDate.match(/(\d{1,2})[-\/](\d{1,2})(?:[-\/](\d{2,4}))?/);
+                                if (parts) {
+                                    const month = parseInt(parts[1]) - 1; // JS months are 0-based
+                                    const day = parseInt(parts[2]);
+                                    const year = parts[3] ? parseInt(parts[3]) : today.getFullYear();
+                                    taskDate = new Date(year < 100 ? year + 2000 : year, month, day);
+                                }
+                            }
+                            
+                            if (!isNaN(taskDate)) {
+                                // Set time to end of day for comparison
+                                taskDate.setHours(23, 59, 59, 999);
+                                return taskDate < today; // Include if overdue
+                            }
+                        } catch (e) {
+                            // If date parsing fails, fall back to string comparison
+                        }
+                    }
+                    
+                    return false;
+                }).sort((a, b) => {
+                    // Sort by type: events first, then deadlines, then tasks
+                    const typeOrder = { event: 0, deadline: 1, task: 2 };
+                    const aTypeOrder = typeOrder[a.type || 'task'];
+                    const bTypeOrder = typeOrder[b.type || 'task'];
+                    
+                    if (aTypeOrder !== bTypeOrder) {
+                        return aTypeOrder - bTypeOrder;
+                    }
+                    
+                    // Within same type, sort by priority (critical first)
+                    const priorityOrder = { critical: 0, important: 1, strategic: 2, waiting: 3, someday: 4 };
+                    return priorityOrder[a.priority] - priorityOrder[b.priority];
+                });
+
+                if (focusTasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>🎉 All clear!</h3>
+                            <p>No critical tasks or items due today</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const groups = {
+                    criticalToday: [],
+                    importantToday: [],
+                    dueToday: [],
+                    criticalNoDate: [],
+                    importantNoDate: []
+                };
+
+                focusTasks.forEach(task => {
+                    const isDueToday = task.doDate && todayFormats.some(format => 
+                        task.doDate.toLowerCase().includes(format.toLowerCase())
+                    );
+                    
+                    // Check if overdue
+                    let isOverdue = false;
+                    if (task.doDate && !isDueToday) {
+                        try {
+                            let taskDate = new Date(task.doDate);
+                            
+                            if (isNaN(taskDate)) {
+                                const parts = task.doDate.match(/(\\d{1,2})[-\\/](\\d{1,2})(?:[-\\/](\\d{2,4}))?/);
+                                if (parts) {
+                                    const month = parseInt(parts[1]) - 1;
+                                    const day = parseInt(parts[2]);
+                                    const year = parts[3] ? parseInt(parts[3]) : today.getFullYear();
+                                    taskDate = new Date(year < 100 ? year + 2000 : year, month, day);
+                                }
+                            }
+                            
+                            if (!isNaN(taskDate)) {
+                                taskDate.setHours(23, 59, 59, 999);
+                                isOverdue = taskDate < today;
+                            }
+                        } catch (e) {
+                            // Date parsing failed
+                        }
+                    }
+
+                    const isDueTodayOrOverdue = isDueToday || isOverdue;
+
+                    if (task.priority === 'critical') {
+                        if (isDueTodayOrOverdue) {
+                            groups.criticalToday.push(task);
+                        } else {
+                            groups.criticalNoDate.push(task);
+                        }
+                    } else if (task.priority === 'important') {
+                        if (isDueTodayOrOverdue) {
+                            groups.importantToday.push(task);
+                        } else {
+                            groups.importantNoDate.push(task);
+                        }
+                    } else if (isDueTodayOrOverdue) {
+                        groups.dueToday.push(task);
+                    }
+                });
+
+                container.innerHTML = '';
+
+                // Sort each group by type (events first, deadlines, then tasks)
+                const sortByType = (tasks) => {
+                    return tasks.sort((a, b) => {
+                        const typeOrder = { event: 0, deadline: 1, task: 2 };
+                        const aTypeOrder = typeOrder[a.type || 'task'];
+                        const bTypeOrder = typeOrder[b.type || 'task'];
+                        return aTypeOrder - bTypeOrder;
+                    });
+                };
+
+                if (groups.criticalToday.length > 0) {
+                    const group = this.createPriorityGroup(
+                        '🔥 CRITICAL & DUE TODAY/OVERDUE',
+                        groups.criticalToday.length,
+                        'priority-critical',
+                        sortByType(groups.criticalToday)
+                    );
+                    container.appendChild(group);
+                }
+
+                if (groups.importantToday.length > 0) {
+                    const group = this.createPriorityGroup(
+                        '⚠️ IMPORTANT & DUE TODAY/OVERDUE',
+                        groups.importantToday.length,
+                        'priority-important',
+                        sortByType(groups.importantToday)
+                    );
+                    container.appendChild(group);
+                }
+
+                if (groups.dueToday.length > 0) {
+                    const group = this.createPriorityGroup(
+                        '📅 OTHER DUE TODAY/OVERDUE',
+                        groups.dueToday.length,
+                        'priority-due-today',
+                        sortByType(groups.dueToday)
+                    );
+                    container.appendChild(group);
+                }
+
+                if (groups.criticalNoDate.length > 0) {
+                    const group = this.createPriorityGroup(
+                        '🔥 CRITICAL (no date)',
+                        groups.criticalNoDate.length,
+                        'priority-critical',
+                        sortByType(groups.criticalNoDate)
+                    );
+                    container.appendChild(group);
+                }
+
+                if (groups.importantNoDate.length > 0) {
+                    const group = this.createPriorityGroup(
+                        '⚠️ IMPORTANT (no date)',
+                        groups.importantNoDate.length,
+                        'priority-important',
+                        sortByType(groups.importantNoDate)
+                    );
+                    container.appendChild(group);
+                }
+                this.updateStats();
+            }
+
+            renderCompactTask(task) {
+                const div = document.createElement('div');
+                div.className = `compact-task ${task.completed ? 'completed' : ''}`;
+                div.setAttribute('data-task-id', task.id);
+                
+                // Checkbox
+                const checkbox = document.createElement('button');
+                checkbox.className = `compact-checkbox ${task.completed ? 'checked' : ''}`;
+                checkbox.innerHTML = task.completed ? '✓' : '';
+                checkbox.onclick = () => this.toggleTaskCompletion(task.id);
+                div.appendChild(checkbox);
+                
+                // Timer button
+                const timerBtn = document.createElement('button');
+                timerBtn.className = `compact-timer-btn ${task.timerRunning ? 'running' : ''}`;
+                timerBtn.innerHTML = task.timerRunning ? '⏸' : '▶';
+                timerBtn.onclick = () => {
+                    TimerManager.toggleTimer(task.id);
+                    this.render();
+                    this.renderCommandCenter();
+                };
+                div.appendChild(timerBtn);
+                
+                // Content container
+                const content = document.createElement('div');
+                content.className = 'compact-task-content';
+                
+                // Title
+                const title = document.createElement('div');
+                title.className = `compact-title ${task.completed ? 'completed' : ''}`;
+                title.textContent = task.title || 'Untitled task';
+                title.onclick = () => this.editCompactTitle(task.id, title);
+                title.style.cursor = 'pointer';
+                content.appendChild(title);
+                
+                // Badges container
+                const badgesContainer = document.createElement('div');
+                badgesContainer.className = 'compact-badges';
+                
+                // Type badge (clickable to cycle)
+                const typeBadge = this.createCompactBadge(
+                    task.type || 'task',
+                    `compact-badge type-${task.type || 'task'}`,
+                    () => {
+                        this.cycleType(task.id);
+                        this.renderCommandCenter(); // Re-sort immediately
+                    }
+                );
+                badgesContainer.appendChild(typeBadge);
+                
+                // Priority badge (clickable to cycle)
+                const priorityBadge = this.createCompactBadge(
+                    `!${task.priority}`,
+                    `compact-badge priority-${task.priority}`,
+                    () => this.cyclePriority(task.id)
+                );
+                badgesContainer.appendChild(priorityBadge);
+                
+                // Client badge (editable)
+                if (task.client) {
+                    const clientBadge = this.createCompactBadge(
+                        `@${task.client}`,
+                        'compact-badge badge-client',
+                        (badge) => this.editCompactBadge(task.id, 'client', badge)
+                    );
+                    badgesContainer.appendChild(clientBadge);
+                }
+                
+                // Case badge (editable)
+                if (task.case) {
+                    const caseBadge = this.createCompactBadge(
+                        `#${task.case}`,
+                        'compact-badge badge-case',
+                        (badge) => this.editCompactBadge(task.id, 'case', badge)
+                    );
+                    badgesContainer.appendChild(caseBadge);
+                }
+                
+                // Project badge (editable)
+                if (task.project) {
+                    const projectBadge = this.createCompactBadge(
+                        `^${task.project}`,
+                        'compact-badge badge-project',
+                        (badge) => this.editCompactBadge(task.id, 'project', badge)
+                    );
+                    badgesContainer.appendChild(projectBadge);
+                }
+                
+                // Date badge (editable)
+                if (task.doDate) {
+                    const dateBadge = this.createCompactBadge(
+                        `📅${DateDisplay.formatDateForDisplay(task.doDate)}`,
+                        'compact-badge badge-date',
+                        (badge) => this.editCompactBadge(task.id, 'doDate', badge)
+                    );
+                    badgesContainer.appendChild(dateBadge);
+                }
+                
+                // Hours badge (editable) - always show, even if empty
+                const hoursBadge = this.createCompactBadge(
+                    task.hours ? `⏱${task.hours}` : `⏱--`,
+                    task.hours ? 'compact-badge badge-hours' : 'compact-badge badge-hours empty',
+                    (badge) => this.editCompactBadge(task.id, 'hours', badge)
+                );
+                badgesContainer.appendChild(hoursBadge);
+                
+                // Timer badge (opens modal)
+                const timerElapsed = TimerManager.getTotalElapsed(task.id);
+                if (timerElapsed > 0) {
+                    const timerBadge = this.createCompactBadge(
+                        `⏲${TimerManager.formatTime(timerElapsed)}`,
+                        'compact-badge badge-timer',
+                        () => this.showTimerModal(task.id)
+                    );
+                    badgesContainer.appendChild(timerBadge);
+                }
+                
+                content.appendChild(badgesContainer);
+                div.appendChild(content);
+                
+                return div;
+            }
+
+            updateStats() {
+                const data = TaskStorage.get();
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                
+                const completedToday = data.tasks.filter(task => 
+                    task.completed && 
+                    task.completedDate && 
+                    task.completedDate.startsWith(todayStr)
+                ).length;
+
+                const totalActiveTasks = data.tasks.filter(task => !task.completed).length;
+
+                const totalTimeToday = data.tasks.reduce((total, task) => {
+                    return total + (task.timerElapsed || 0);
+                }, 0);
+
+                const overdue = data.tasks.filter(task => {
+                    if (task.completed || !task.doDate) return false;
+                    const taskDate = new Date(task.doDate);
+                    return taskDate < today;
+                }).length;
+
+                const tasksCompletedEl = document.getElementById('tasksCompleted');
+                const totalTasksEl = document.getElementById('totalTasks');
+                const timeLoggedEl = document.getElementById('timeLogged');
+                const overdueItemsEl = document.getElementById('overdueItems');
+                
+                if (tasksCompletedEl) tasksCompletedEl.textContent = completedToday;
+                if (totalTasksEl) totalTasksEl.textContent = totalActiveTasks;
+                if (timeLoggedEl) timeLoggedEl.textContent = TimerManager.formatTime(totalTimeToday);
+                if (overdueItemsEl) overdueItemsEl.textContent = overdue;
+            }
+        }
+
+        // Global functions
+        function showView(viewName) {
+            currentView = viewName;
+            
+            // Update tabs
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Show selected view
+            const activeTab = document.querySelector(`[onclick="showView('${viewName}')"]`);
+            const activeView = document.getElementById(`${viewName}-view`);
+            
+            if (activeTab) activeTab.classList.add('active');
+            if (activeView) activeView.classList.add('active');
+            
+            // Render appropriate content
+            if (viewName === 'command-center') {
+                uiManager.renderCommandCenter();
+            }
+        }
+
+        function refreshData() {
+            uiManager.render();
+            uiManager.renderCommandCenter();
+        }
+
+        function toggleTaskCompletion(taskId) {
+            uiManager.toggleTaskCompletion(taskId);
+        }
+
+        function toggleTimer(taskId) {
+            TimerManager.toggleTimer(taskId);
+            uiManager.render();
+            uiManager.renderCommandCenter();
+        }
+
+        function stopActiveTimer() {
+            const data = TaskStorage.get();
+            const runningTask = data.tasks.find(task => task.timerRunning);
+            if (runningTask) {
+                TimerManager.stopTimer(runningTask.id);
+                uiManager.render();
+                uiManager.renderCommandCenter();
+            }
+        }
+
+        // Initialize the app
+        const uiManager = new UIManager();
+        
+        // Render command center initially
+        setTimeout(() => {
+            uiManager.renderCommandCenter();
+        }, 100);
+    </script>
+</body>
+</html>

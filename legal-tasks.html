@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Task Entry System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Entry Section */
+        .entry-section {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .cheat-sheet {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-family: 'SF Mono', Consolas, monospace;
+            background: rgba(107, 114, 128, 0.05);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(107, 114, 128, 0.1);
+        }
+
+        .cheat-sheet-title {
+            color: #9ca3af;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .cheat-sheet-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 24px;
+            align-items: center;
+        }
+
+        .cheat-item {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .cheat-symbol {
+            font-weight: 600;
+            min-width: 16px;
+        }
+
+        .cheat-item.type-item { color: #9ca3af; }
+        .cheat-item.client-item { color: #60a5fa; }
+        .cheat-item.case-item { color: #f472b6; }
+        .cheat-item.project-item { color: #4ade80; }
+        .cheat-item.priority-item { color: #ef4444; }
+        .cheat-item.date-item { color: #fbbf24; }
+        .cheat-item.hours-item { color: #a855f7; }
+
+        .cheat-symbol, .cheat-description {
+            font-weight: 600;
+        }
+
+        .task-input {
+            width: 100%;
+            background-color: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 16px;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .task-input::placeholder {
+            color: #6b7280;
+        }
+
+        .task-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Task List */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Task Item */
+        .task-item {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 16px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .task-item:hover {
+            border-color: #2a2a2a;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .task-title:hover {
+            color: #3b82f6;
+        }
+
+        .task-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .badge:hover {
+            transform: translateY(-1px);
+            border-color: currentColor;
+        }
+
+        /* Type badges */
+        .type-badge {
+            cursor: pointer;
+        }
+
+        .type-task {
+            background-color: rgba(107, 114, 128, 0.1);
+            color: #9ca3af;
+        }
+
+        .type-event {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .type-deadline {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* Priority badges */
+        .priority-badge {
+            cursor: pointer;
+        }
+
+        .priority-critical {
+            background-color: rgba(248, 113, 113, 0.1);
+            color: #f87171;
+        }
+
+        .priority-important {
+            background-color: rgba(251, 146, 60, 0.1);
+            color: #fb923c;
+        }
+
+        .priority-strategic {
+            background-color: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+        }
+
+        .priority-waiting {
+            background-color: rgba(192, 132, 252, 0.1);
+            color: #c084fc;
+        }
+
+        .priority-someday {
+            background-color: rgba(167, 139, 250, 0.1);
+            color: #a78bfa;
+        }
+
+        .client-badge {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+        }
+
+        .client-badge.empty {
+            background-color: rgba(59, 130, 246, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .client-badge.empty:hover {
+            color: #60a5fa;
+            border-color: #60a5fa;
+        }
+
+        .case-badge {
+            background-color: rgba(236, 72, 153, 0.1);
+            color: #f472b6;
+        }
+
+        .case-badge.empty {
+            background-color: rgba(236, 72, 153, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .case-badge.empty:hover {
+            color: #f472b6;
+            border-color: #f472b6;
+        }
+
+        .project-badge {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+
+        .project-badge.empty {
+            background-color: rgba(34, 197, 94, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .project-badge.empty:hover {
+            color: #4ade80;
+            border-color: #4ade80;
+        }
+
+        .date-badge {
+            background-color: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+        }
+
+        .date-badge.empty {
+            background-color: rgba(251, 191, 36, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .date-badge.empty:hover {
+            color: #fbbf24;
+            border-color: #fbbf24;
+        }
+
+        .hours-badge {
+            background-color: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+        }
+
+        .hours-badge.empty {
+            background-color: rgba(168, 85, 247, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .hours-badge.empty:hover {
+            color: #a855f7;
+            border-color: #a855f7;
+        }
+
+        /* Delete Button */
+        .delete-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Inline Edit */
+        .inline-edit {
+            background-color: #1f2937;
+            border: 1px solid #3b82f6;
+            border-radius: 4px;
+            padding: 2px 8px;
+            color: #ffffff;
+            font-size: inherit;
+            font-family: inherit;
+            outline: none;
+            min-width: 80px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .task-item {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Timer Button */
+        .timer-button {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            background: none;
+            border: none;
+            color: #4a5568;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .timer-button:hover {
+            color: #6b7280;
+        }
+
+        .timer-button.running {
+            color: #3b82f6;
+        }
+
+        /* Timer Badge */
+        .timer-badge {
+            background-color: rgba(168, 85, 247, 0.1);
+            color: #a855f7;
+        }
+
+        .timer-badge.empty {
+            background-color: rgba(168, 85, 247, 0.05);
+            color: #6b7280;
+            border: 1px dashed #374151;
+        }
+
+        .timer-badge.empty:hover {
+            color: #a855f7;
+            border-color: #a855f7;
+        }
+
+        /* Timer Modal */
+        .timer-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .timer-modal {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 24px;
+            width: 500px;
+            max-width: 90vw;
+        }
+
+        .timer-modal h3 {
+            margin: 0 0 20px 0;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .timer-modal-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .timer-modal-row label {
+            flex: 0 0 80px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .timer-modal-row input {
+            flex: 1;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            min-width: 0;
+        }
+
+        .timer-modal-row input:focus {
+            border-color: #3b82f6;
+        }
+
+        .quick-buttons {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .quick-button {
+            padding: 6px 12px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .quick-button:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .timer-total {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 20px;
+            color: #a855f7;
+            font-weight: 600;
+        }
+
+        .timer-modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .timer-modal-actions button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .timer-modal-actions .save-btn {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .timer-modal-actions .save-btn:hover {
+            background: #2563eb;
+        }
+
+        .timer-modal-actions .cancel-btn {
+            background: #1f2937;
+            color: #9ca3af;
+            border: 1px solid #374151;
+        }
+
+        .timer-modal-actions .cancel-btn:hover {
+            background: #374151;
+        }
+
+        .timer-modal-actions .clear-btn {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .timer-modal-actions .clear-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Adjust task title to accommodate timer button */
+        .task-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        /* Checkbox Button */
+        .checkbox-button {
+            width: 16px;
+            height: 16px;
+            margin-right: 15px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .checkbox-button:hover {
+            border-color: #6b7280;
+        }
+
+        .checkbox-button.checked {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #ffffff;
+        }
+
+        .checkbox-button.checked:hover {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        /* Completed Task Styling */
+        .task-item.completed .task-title {
+            opacity: 0.50;
+            text-decoration: line-through;
+        }
+
+        .task-item.completed .badge:not(.timer-badge) {
+            opacity: 0.65;
+            pointer-events: none;
+            cursor: default;
+        }
+
+        .task-item.completed .badge:not(.timer-badge):hover {
+            transform: none;
+            border-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="entry-section">
+            <div class="cheat-sheet">
+                <div class="cheat-sheet-title">Quick Entry Commands:</div>
+                <div class="cheat-sheet-grid">
+                    <div class="cheat-item type-item">
+                        <span class="cheat-symbol">~</span>
+                        <span class="cheat-description">type</span>
+                    </div>
+                    <div class="cheat-item client-item">
+                        <span class="cheat-symbol">@</span>
+                        <span class="cheat-description">client</span>
+                    </div>
+                    <div class="cheat-item case-item">
+                        <span class="cheat-symbol">#</span>
+                        <span class="cheat-description">case</span>
+                    </div>
+                    <div class="cheat-item project-item">
+                        <span class="cheat-symbol">^</span>
+                        <span class="cheat-description">project</span>
+                    </div>
+                    <div class="cheat-item priority-item">
+                        <span class="cheat-symbol">!</span>
+                        <span class="cheat-description">priority</span>
+                    </div>
+                    <div class="cheat-item date-item">
+                        <span class="cheat-symbol">📅</span>
+                        <span class="cheat-description">date/time</span>
+                    </div>
+                    <div class="cheat-item hours-item">
+                        <span class="cheat-symbol">⏱</span>
+                        <span class="cheat-description">hours</span>
+                    </div>
+                </div>
+            </div>
+            <input 
+                type="text" 
+                class="task-input" 
+                placeholder="Enter task..."
+                id="taskInput"
+            >
+        </div>
+        
+        <div class="task-list" id="taskList"></div>
+    </div>
+
+    <script>
+        // Priority levels and their properties
+        const PRIORITIES = {
+            critical: { color: '#f87171', bg: 'rgba(248, 113, 113, 0.1)' },
+            important: { color: '#fb923c', bg: 'rgba(251, 146, 60, 0.1)' },
+            strategic: { color: '#4ade80', bg: 'rgba(74, 222, 128, 0.1)' },
+            waiting: { color: '#c084fc', bg: 'rgba(192, 132, 252, 0.1)' },
+            someday: { color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.1)' }
+        };
+
+        const PRIORITY_ORDER = ['critical', 'important', 'strategic', 'waiting', 'someday'];
+
+        // Storage management
+        class TaskStorage {
+            static get() {
+                const data = localStorage.getItem('legalTasks');
+                return data ? JSON.parse(data) : { tasks: [], nextId: 1 };
+            }
+
+            static save(data) {
+                localStorage.setItem('legalTasks', JSON.stringify(data));
+            }
+
+            static addTask(task) {
+                const data = this.get();
+                task.id = data.nextId++;
+                data.tasks.push(task);
+                this.save(data);
+                return task;
+            }
+
+            static updateTask(id, updates) {
+                const data = this.get();
+                const taskIndex = data.tasks.findIndex(t => t.id === id);
+                if (taskIndex !== -1) {
+                    data.tasks[taskIndex] = { ...data.tasks[taskIndex], ...updates };
+                    this.save(data);
+                }
+            }
+
+            static deleteTask(id) {
+                const data = this.get();
+                data.tasks = data.tasks.filter(t => t.id !== id);
+                this.save(data);
+            }
+        }
+
+        // Timer management
+        class TimerManager {
+            static timers = new Map();
+            static intervals = new Map();
+
+            static startTimer(taskId) {
+                // Stop any other running timers
+                this.stopAllTimers();
+
+                const now = Date.now();
+                this.timers.set(taskId, now);
+
+                // Update task
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task) {
+                    task.timerStart = now;
+                    task.timerRunning = true;
+                    TaskStorage.save(data);
+                }
+
+                // Start interval for UI updates
+                const interval = setInterval(() => {
+                    const elapsed = this.getElapsed(taskId);
+                    this.updateTimerDisplay(taskId, elapsed);
+                }, 1000);
+
+                this.intervals.set(taskId, interval);
+            }
+
+            static stopTimer(taskId) {
+                const interval = this.intervals.get(taskId);
+                if (interval) {
+                    clearInterval(interval);
+                    this.intervals.delete(taskId);
+                }
+
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (task && task.timerRunning) {
+                    const elapsed = this.getElapsed(taskId);
+                    task.timerElapsed = (task.timerElapsed || 0) + elapsed;
+                    task.timerRunning = false;
+                    task.timerStart = null;
+                    task.actualTime = task.timerElapsed;
+                    TaskStorage.save(data);
+                }
+
+                this.timers.delete(taskId);
+            }
+
+            static stopAllTimers() {
+                const data = TaskStorage.get();
+                data.tasks.forEach(task => {
+                    if (task.timerRunning) {
+                        this.stopTimer(task.id);
+                    }
+                });
+            }
+
+            static toggleTimer(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                if (task.timerRunning) {
+                    this.stopTimer(taskId);
+                } else {
+                    this.startTimer(taskId);
+                }
+            }
+
+            static getElapsed(taskId) {
+                const startTime = this.timers.get(taskId);
+                if (!startTime) return 0;
+                return Math.floor((Date.now() - startTime) / 1000);
+            }
+
+            static getTotalElapsed(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return 0;
+
+                const previousElapsed = task.timerElapsed || 0;
+                const currentElapsed = task.timerRunning ? this.getElapsed(taskId) : 0;
+                return previousElapsed + currentElapsed;
+            }
+
+            static formatTime(seconds) {
+                if (seconds < 3600) {
+                    // Under 1 hour: show as M:SS
+                    const mins = Math.floor(seconds / 60);
+                    const secs = seconds % 60;
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                } else {
+                    // Over 1 hour: show as Xh Ym
+                    const hours = Math.floor(seconds / 3600);
+                    const mins = Math.floor((seconds % 3600) / 60);
+                    return `${hours}h ${mins}m`;
+                }
+            }
+
+            static updateTimerDisplay(taskId, elapsed) {
+                const badge = document.querySelector(`[data-timer-id="${taskId}"]`);
+                if (badge) {
+                    const data = TaskStorage.get();
+                    const task = data.tasks.find(t => t.id === taskId);
+                    if (task) {
+                        const total = (task.timerElapsed || 0) + elapsed;
+                        badge.textContent = `⏲ ${this.formatTime(total)}`;
+                    }
+                }
+            }
+
+            static restoreRunningTimers() {
+                const data = TaskStorage.get();
+                data.tasks.forEach(task => {
+                    if (task.timerRunning && task.timerStart) {
+                        // Calculate elapsed time since timer started
+                        const elapsed = Math.floor((Date.now() - task.timerStart) / 1000);
+                        this.timers.set(task.id, task.timerStart);
+                        
+                        // Start interval for UI updates
+                        const interval = setInterval(() => {
+                            const currentElapsed = this.getElapsed(task.id);
+                            this.updateTimerDisplay(task.id, currentElapsed);
+                        }, 1000);
+                        
+                        this.intervals.set(task.id, interval);
+                    }
+                });
+            }
+        }
+
+        // Task parser
+        class TaskParser {
+            static parse(input) {
+                const task = {
+                    originalInput: input,
+                    type: 'task', // default
+                    title: '',
+                    client: '',
+                    case: '',
+                    project: '',
+                    priority: 'strategic',
+                    doDate: '',
+                    hours: '',
+                    // Add these timer fields:
+                    timerStart: null,
+                    timerElapsed: 0,
+                    timerRunning: false,
+                    actualTime: 0,
+                    // Add completion field:
+                    completed: false
+                };
+
+                let remaining = input;
+
+                // Parse hash commands first (before date/time)
+                remaining = this.extractType(remaining, task);
+                remaining = this.extractClient(remaining, task);
+                remaining = this.extractCase(remaining, task);
+                remaining = this.extractProject(remaining, task);
+                remaining = this.extractPriority(remaining, task);
+                remaining = this.extractHours(remaining, task);
+
+                // Parse date/time after hash commands
+                const dateResult = this.parseDateTime(remaining);
+                if (dateResult.date) {
+                    task.doDate = dateResult.date;
+                    remaining = dateResult.remaining;
+                }
+
+                // Clean and set title
+                task.title = remaining.trim();
+
+                return task;
+            }
+
+            static parseDateTime(input) {
+                // Common date/time patterns - check the entire string
+                const patterns = [
+                    // Date + time patterns
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?\s+\d{1,2}:\d{2}\s*(?:am|pm)?)\s*$/i,
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?\s+\d{1,2}\s*(?:am|pm))\s*$/i,
+                    
+                    // Date only patterns
+                    /\b(\d{1,2}[-\/]\d{1,2}(?:[-\/]\d{2,4})?)\s*$/i,
+                    
+                    // Time only patterns
+                    /\b(\d{1,2}:\d{2}\s*(?:am|pm)?)\s*$/i,
+                    /\b(\d{1,2}\s*(?:am|pm))\s*$/i,
+                    
+                    // Relative dates with optional time
+                    /\b((?:today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)(?:\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)?)?)\s*$/i
+                ];
+
+                for (const pattern of patterns) {
+                    const match = input.match(pattern);
+                    if (match) {
+                        return {
+                            date: match[1],
+                            remaining: input.substring(0, match.index).trim()
+                        };
+                    }
+                }
+
+                return { date: '', remaining: input };
+            }
+
+            static extractType(input, task) {
+                const typePattern = /~(task|event|deadline)\b/i;
+                const match = input.match(typePattern);
+                if (match) {
+                    task.type = match[1].toLowerCase();
+                    return input.replace(match[0], '').trim();
+                }
+                // Auto-detection will go here later
+                return input;
+            }
+
+            static extractClient(input, task) {
+                return this.extractHashCommand(input, '@', (value) => {
+                    task.client = value;
+                });
+            }
+
+            static extractCase(input, task) {
+                return this.extractHashCommand(input, '#', (value) => {
+                    task.case = value;
+                });
+            }
+
+            static extractProject(input, task) {
+                return this.extractHashCommand(input, '\\^', (value) => {
+                    task.project = value;
+                });
+            }
+
+            static extractPriority(input, task) {
+                const priorityPattern = /!(critical|important|strategic|waiting|someday)\b/i;
+                const match = input.match(priorityPattern);
+                if (match) {
+                    task.priority = match[1].toLowerCase();
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractHours(input, task) {
+                // Match patterns like: 15m, 1h, 2h, 4h, 1.5h, 30m
+                const hoursPattern = /\b(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours?|m|min|mins?)\b/i;
+                const match = input.match(hoursPattern);
+                if (match) {
+                    const value = match[1];
+                    const unit = match[2].toLowerCase();
+                    
+                    // Normalize to display format
+                    if (unit.startsWith('h')) {
+                        task.hours = value + 'h';
+                    } else {
+                        task.hours = value + 'm';
+                    }
+                    
+                    return input.replace(match[0], '').trim();
+                }
+                return input;
+            }
+
+            static extractHashCommand(input, symbol, setter) {
+                // Look for the symbol
+                const symbolIndex = input.indexOf(symbol === '\\^' ? '^' : symbol);
+                if (symbolIndex === -1) return input;
+                
+                // Find where the value ends by looking for:
+                // 1. Next hash command symbol
+                // 2. Date/time pattern
+                // 3. End of string
+                let endIndex = input.length;
+                let valueStart = symbolIndex + 1;
+                
+                // Skip whitespace after symbol
+                while (valueStart < input.length && input[valueStart] === ' ') {
+                    valueStart++;
+                }
+                
+                // Look for next boundary
+                for (let i = valueStart; i < input.length; i++) {
+                    const char = input[i];
+                    const restOfString = input.substring(i);
+                    
+                    // Check for next hash command
+                    if (['@', '#', '^', '!', '~'].includes(char)) {
+                        endIndex = i;
+                        break;
+                    }
+                    
+                    // Check for date/time patterns
+                    if (this.looksLikeDateTime(restOfString)) {
+                        endIndex = i;
+                        break;
+                    }
+                }
+                
+                const value = input.substring(valueStart, endIndex).trim();
+                setter(value);
+                
+                // Remove the extracted part
+                return (input.substring(0, symbolIndex) + ' ' + input.substring(endIndex)).trim();
+            }
+            
+            static looksLikeDateTime(str) {
+                // Check if string starts with common date/time patterns
+                const patterns = [
+                    /^\d{1,2}[-\/]\d{1,2}/,  // 8/12, 8-12
+                    /^\d{1,2}:\d{2}/,         // 3:30
+                    /^\d{1,2}(?:am|pm)/i,     // 3pm
+                    /^(today|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday|sunday)/i
+                ];
+                
+                return patterns.some(pattern => pattern.test(str));
+            }
+        }
+
+        // UI Manager
+        class UIManager {
+            constructor() {
+                this.taskInput = document.getElementById('taskInput');
+                this.taskList = document.getElementById('taskList');
+                this.setupEventListeners();
+                this.render();
+                // Add this line:
+                TimerManager.restoreRunningTimers();
+            }
+
+            setupEventListeners() {
+                this.taskInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && this.taskInput.value.trim()) {
+                        this.addTask();
+                    }
+                });
+            }
+
+            addTask() {
+                const input = this.taskInput.value.trim();
+                if (!input) return;
+
+                const task = TaskParser.parse(input);
+                TaskStorage.addTask(task);
+                this.taskInput.value = '';
+                this.render();
+            }
+
+            render() {
+                const data = TaskStorage.get();
+                this.taskList.innerHTML = '';
+                
+                data.tasks.forEach(task => {
+                    this.taskList.appendChild(this.createTaskElement(task));
+                });
+            }
+
+            createTaskElement(task) {
+                const div = document.createElement('div');
+                div.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                // Task header with checkbox, timer button and title
+                const header = document.createElement('div');
+                header.className = 'task-header';
+                
+                // Checkbox button
+                const checkboxBtn = document.createElement('button');
+                checkboxBtn.className = `checkbox-button ${task.completed ? 'checked' : ''}`;
+                checkboxBtn.innerHTML = task.completed ? '✓' : '';
+                checkboxBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.toggleTaskCompletion(task.id);
+                };
+                header.appendChild(checkboxBtn);
+                
+                // Timer button
+                const timerBtn = document.createElement('button');
+                timerBtn.className = `timer-button ${task.timerRunning ? 'running' : ''}`;
+                timerBtn.innerHTML = task.timerRunning ? '⏸' : '▶';
+                timerBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    TimerManager.toggleTimer(task.id);
+                    this.render();
+                };
+                header.appendChild(timerBtn);
+                
+                // Title
+                const title = document.createElement('div');
+                title.className = 'task-title';
+                title.textContent = task.title || 'Untitled task';
+                title.style.flex = '1';
+                title.onclick = () => this.editTitle(task.id, title);
+                header.appendChild(title);
+                
+                div.appendChild(header);
+
+                // Badges container
+                const badges = document.createElement('div');
+                badges.className = 'task-badges';
+
+                // Always show all badges in order
+                
+                // 1. Type badge (task/event/deadline)
+                badges.appendChild(this.createBadge(
+                    (task.type || 'task'),
+                    `type-badge type-${task.type || 'task'}`,
+                    task.completed ? null : () => this.cycleType(task.id)
+                ));
+                
+                // 2. Priority badge (always has a value)
+                badges.appendChild(this.createBadge(
+                    `!${task.priority}`,
+                    `priority-badge priority-${task.priority}`,
+                    task.completed ? null : () => this.cyclePriority(task.id)
+                ));
+
+                // 3. Client badge
+                badges.appendChild(this.createBadge(
+                    task.client ? `@${task.client}` : `@ --`,
+                    task.client ? 'client-badge' : 'client-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'client', badge)
+                ));
+
+                // 4. Case badge
+                badges.appendChild(this.createBadge(
+                    task.case ? `#${task.case}` : `# --`,
+                    task.case ? 'case-badge' : 'case-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'case', badge)
+                ));
+
+                // 5. Project badge
+                badges.appendChild(this.createBadge(
+                    task.project ? `^${task.project}` : `^ --`,
+                    task.project ? 'project-badge' : 'project-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'project', badge)
+                ));
+
+                // 6. Date badge
+                badges.appendChild(this.createBadge(
+                    task.doDate ? `📅 ${task.doDate}` : `📅 --`,
+                    task.doDate ? 'date-badge' : 'date-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'doDate', badge)
+                ));
+
+                // 7. Hours badge
+                badges.appendChild(this.createBadge(
+                    task.hours ? `⏱ ${task.hours}` : `⏱ --`,
+                    task.hours ? 'hours-badge' : 'hours-badge empty',
+                    task.completed ? null : (badge) => this.editBadge(task.id, 'hours', badge)
+                ));
+
+                // 8. Timer badge (actual time)
+                const totalElapsed = TimerManager.getTotalElapsed(task.id);
+                const timerBadge = this.createBadge(
+                    totalElapsed > 0 ? `⏲ ${TimerManager.formatTime(totalElapsed)}` : `⏲ --`,
+                    totalElapsed > 0 ? 'timer-badge' : 'timer-badge empty',
+                    (badge) => this.showTimerModal(task.id)
+                );
+                timerBadge.setAttribute('data-timer-id', task.id);
+                badges.appendChild(timerBadge);
+
+                div.appendChild(badges);
+
+                // Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '✕';
+                deleteBtn.onclick = () => {
+                    if (task.timerRunning) {
+                        TimerManager.stopTimer(task.id);
+                    }
+                    TaskStorage.deleteTask(task.id);
+                    this.render();
+                };
+                div.appendChild(deleteBtn);
+
+                return div;
+            }
+
+            createBadge(text, className, onClick) {
+                const badge = document.createElement('span');
+                badge.className = `badge ${className}`;
+                badge.textContent = text;
+                if (onClick) {
+                    badge.onclick = () => onClick(badge);
+                }
+                return badge;
+            }
+
+            toggleTaskCompletion(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                TaskStorage.updateTask(taskId, { completed: !task.completed });
+                this.render();
+            }
+
+            editTitle(taskId, element) {
+                const currentText = element.textContent;
+                const input = this.createInlineEdit(currentText, (value) => {
+                    if (value.trim()) {
+                        TaskStorage.updateTask(taskId, { title: value.trim() });
+                        this.render();
+                    } else {
+                        element.textContent = currentText;
+                    }
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            editBadge(taskId, field, element) {
+                const currentValue = element.textContent.replace(/[@#^📅⏱]\s*/, '').replace('--', '').trim();
+                const prefix = element.textContent.match(/[@#^📅⏱]/)?.[0] || '';
+                
+                const input = this.createInlineEdit(currentValue, (value) => {
+                    TaskStorage.updateTask(taskId, { [field]: value.trim() });
+                    this.render();
+                });
+                
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+                input.select();
+            }
+
+            cycleType(taskId) {
+                const types = ['task', 'event', 'deadline'];
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const currentType = task.type || 'task';
+                const currentIndex = types.indexOf(currentType);
+                const nextIndex = (currentIndex + 1) % types.length;
+                
+                TaskStorage.updateTask(taskId, { type: types[nextIndex] });
+                this.render();
+            }
+
+            cyclePriority(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const currentIndex = PRIORITY_ORDER.indexOf(task.priority);
+                const nextIndex = (currentIndex + 1) % PRIORITY_ORDER.length;
+                
+                TaskStorage.updateTask(taskId, { priority: PRIORITY_ORDER[nextIndex] });
+                this.render();
+            }
+
+            createInlineEdit(value, onSave) {
+                const input = document.createElement('input');
+                input.className = 'inline-edit';
+                input.value = value;
+                
+                const save = () => {
+                    input.removeEventListener('blur', save);
+                    onSave(input.value);
+                };
+                
+                input.addEventListener('blur', save);
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        save();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        input.removeEventListener('blur', save);
+                        onSave(value); // Restore original
+                    }
+                });
+                
+                // Auto-size the input
+                const testSpan = document.createElement('span');
+                testSpan.style.visibility = 'hidden';
+                testSpan.style.position = 'absolute';
+                testSpan.style.fontSize = getComputedStyle(input).fontSize;
+                testSpan.textContent = value || 'MM'; // Minimum width
+                document.body.appendChild(testSpan);
+                input.style.width = Math.max(80, testSpan.offsetWidth + 20) + 'px';
+                document.body.removeChild(testSpan);
+                
+                return input;
+            }
+
+            showTimerModal(taskId) {
+                const data = TaskStorage.get();
+                const task = data.tasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                // Create modal overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'timer-modal-overlay';
+                
+                // Create modal
+                const modal = document.createElement('div');
+                modal.className = 'timer-modal';
+                
+                modal.innerHTML = `
+                    <h3>Adjust Timer for Task</h3>
+                    <div class="timer-modal-row">
+                        <label>Started:</label>
+                        <input type="time" id="timer-start-time" />
+                        <input type="date" id="timer-start-date" />
+                    </div>
+                    <div class="timer-modal-row">
+                        <label>Ended:</label>
+                        <input type="time" id="timer-end-time" />
+                        <input type="date" id="timer-end-date" />
+                    </div>
+                    <div class="quick-buttons">
+                        <button class="quick-button" data-minutes="-0">Just now</button>
+                        <button class="quick-button" data-minutes="-15">15m ago</button>
+                        <button class="quick-button" data-minutes="-30">30m ago</button>
+                        <button class="quick-button" data-minutes="-60">1h ago</button>
+                    </div>
+                    <div class="timer-total">Total time: <span id="timer-total">0:00</span></div>
+                    <div class="timer-modal-actions">
+                        <button class="clear-btn">Clear</button>
+                        <button class="cancel-btn">Cancel</button>
+                        <button class="save-btn">Save</button>
+                    </div>
+                `;
+                
+                overlay.appendChild(modal);
+                document.body.appendChild(overlay);
+                
+                // Set initial values
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                const currentTime = now.toTimeString().slice(0, 5);
+                
+                document.getElementById('timer-start-date').value = today;
+                document.getElementById('timer-end-date').value = today;
+                
+                if (task.timerRunning) {
+                    // Timer is running
+                    const startTime = new Date(task.timerStart);
+                    document.getElementById('timer-start-time').value = startTime.toTimeString().slice(0, 5);
+                    document.getElementById('timer-start-date').value = startTime.toISOString().split('T')[0];
+                    document.getElementById('timer-end-time').value = currentTime;
+                } else if (task.timerElapsed > 0) {
+                    // Timer has been used
+                    const endTime = now;
+                    const startTime = new Date(now.getTime() - (task.timerElapsed * 1000));
+                    document.getElementById('timer-start-time').value = startTime.toTimeString().slice(0, 5);
+                    document.getElementById('timer-start-date').value = startTime.toISOString().split('T')[0];
+                    document.getElementById('timer-end-time').value = endTime.toTimeString().slice(0, 5);
+                    document.getElementById('timer-end-date').value = endTime.toISOString().split('T')[0];
+                } else {
+                    // Timer never used
+                    document.getElementById('timer-start-time').value = currentTime;
+                    document.getElementById('timer-end-time').value = currentTime;
+                }
+                
+                // Update total time display
+                const updateTotal = () => {
+                    const startDate = document.getElementById('timer-start-date').value;
+                    const startTime = document.getElementById('timer-start-time').value;
+                    const endDate = document.getElementById('timer-end-date').value;
+                    const endTime = document.getElementById('timer-end-time').value;
+                    
+                    if (startDate && startTime && endDate && endTime) {
+                        const start = new Date(`${startDate}T${startTime}`);
+                        const end = new Date(`${endDate}T${endTime}`);
+                        const diff = Math.max(0, Math.floor((end - start) / 1000));
+                        document.getElementById('timer-total').textContent = TimerManager.formatTime(diff);
+                    }
+                };
+                
+                // Event listeners
+                modal.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('change', updateTotal);
+                });
+                
+                modal.querySelectorAll('.quick-button').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const minutes = parseInt(btn.dataset.minutes);
+                        const start = new Date(Date.now() + (minutes * 60 * 1000));
+                        document.getElementById('timer-start-time').value = start.toTimeString().slice(0, 5);
+                        document.getElementById('timer-start-date').value = start.toISOString().split('T')[0];
+                        updateTotal();
+                    });
+                });
+                
+                modal.querySelector('.clear-btn').addEventListener('click', () => {
+                    TaskStorage.updateTask(taskId, {
+                        timerStart: null,
+                        timerElapsed: 0,
+                        timerRunning: false,
+                        actualTime: 0
+                    });
+                    TimerManager.stopTimer(taskId);
+                    document.body.removeChild(overlay);
+                    this.render();
+                });
+                
+                modal.querySelector('.cancel-btn').addEventListener('click', () => {
+                    document.body.removeChild(overlay);
+                });
+                
+                modal.querySelector('.save-btn').addEventListener('click', () => {
+                    const startDate = document.getElementById('timer-start-date').value;
+                    const startTime = document.getElementById('timer-start-time').value;
+                    const endDate = document.getElementById('timer-end-date').value;
+                    const endTime = document.getElementById('timer-end-time').value;
+                    
+                    if (startDate && startTime && endDate && endTime) {
+                        const start = new Date(`${startDate}T${startTime}`);
+                        const end = new Date(`${endDate}T${endTime}`);
+                        const elapsed = Math.max(0, Math.floor((end - start) / 1000));
+                        
+                        TaskStorage.updateTask(taskId, {
+                            timerStart: null,
+                            timerElapsed: elapsed,
+                            timerRunning: false,
+                            actualTime: elapsed
+                        });
+                        
+                        TimerManager.stopTimer(taskId);
+                    }
+                    
+                    document.body.removeChild(overlay);
+                    this.render();
+                });
+                
+                // Close on overlay click
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay) {
+                        document.body.removeChild(overlay);
+                    }
+                });
+                
+                updateTotal();
+            }
+        }
+
+        // Initialize the app
+        new UIManager();
+    </script>
+</body>
+</html>

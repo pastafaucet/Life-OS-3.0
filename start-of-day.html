@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start of Day - Legal Task Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Navigation */
+        .header {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 4px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .view-tab {
+            padding: 8px 16px;
+            border-radius: 6px;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            text-decoration: none;
+        }
+
+        .view-tab.active {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+
+        .view-tab:not(.active):hover {
+            color: #ffffff;
+            background: #2a2a2a;
+        }
+
+        /* Start of Day Specific Styles */
+        .start-of-day-header {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .date-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 16px;
+        }
+
+        .header-info {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            color: #9ca3af;
+        }
+
+        .weather-info {
+            color: #60a5fa;
+        }
+
+        .sleep-info {
+            color: #c084fc;
+        }
+
+        /* Main Grid Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Critical Today Section */
+        .critical-item {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .critical-checkbox {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: 1px solid #ef4444;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .critical-checkbox.checked {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .critical-title {
+            flex: 1;
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        .critical-title.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        /* Schedule Section */
+        .schedule-item {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .schedule-time {
+            color: #3b82f6;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .schedule-title {
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .schedule-duration {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .schedule-total {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .schedule-total-hours {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        /* Tasks Section - Full Width */
+        .tasks-section {
+            background-color: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .priority-instructions {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #60a5fa;
+        }
+
+        .task-item {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .task-item.priority {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.05);
+        }
+
+        .task-item:hover {
+            border-color: #2a2a2a;
+        }
+
+        .priority-star {
+            width: 24px;
+            height: 24px;
+            background: none;
+            border: 1px solid #6b7280;
+            border-radius: 4px;
+            color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .priority-star.active {
+            background: #fbbf24;
+            border-color: #fbbf24;
+            color: #000000;
+        }
+
+        .priority-star:hover {
+            border-color: #fbbf24;
+        }
+
+        .task-checkbox {
+            width: 16px;
+            height: 16px;
+            background: none;
+            border: 1px solid #4a5568;
+            border-radius: 3px;
+            color: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .task-checkbox.checked {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #ffffff;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #ffffff;
+        }
+
+        .task-title.completed {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .task-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .task-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-client { background: rgba(59, 130, 246, 0.1); color: #60a5fa; }
+        .badge-case { background: rgba(236, 72, 153, 0.1); color: #f472b6; }
+        .badge-date { background: rgba(251, 191, 36, 0.1); color: #fbbf24; }
+        .badge-priority { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+        /* Bottom Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1000px) {
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-item {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric-label {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .metric-value {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .metric-value.success {
+            color: #4ade80;
+        }
+
+        .metric-value.warning {
+            color: #fbbf24;
+        }
+
+        .metric-value.danger {
+            color: #ef4444;
+        }
+
+        .ai-placeholder {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px dashed rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            color: #c084fc;
+            font-style: italic;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: #6b7280;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }
+
+        /* Priority Numbers */
+        .priority-number {
+            background: #fbbf24;
+            color: #000000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🌅 Legal Task Manager</h1>
+            <div class="view-tabs">
+                <a href="unified-legal-tasks.html" class="view-tab">📊 Command Center</a>
+                <a href="unified-legal-tasks.html#task-entry" class="view-tab">✏️ Task Entry</a>
+                <a href="start-of-day.html" class="view-tab active">🌅 Start of Day</a>
+            </div>
+        </div>
+
+        <!-- Date and Header Info -->
+        <div class="start-of-day-header">
+            <div class="date-title" id="currentDate"></div>
+            <div class="header-info">
+                <div class="info-item weather-info">
+                    <span>🌤️</span>
+                    <span id="weatherInfo">Loading weather...</span>
+                </div>
+                <div class="info-item sleep-info">
+                    <span>😴</span>
+                    <span id="sleepInfo">Sleep: --</span>
+                </div>
+                <div class="info-item">
+                    <span>⏱️</span>
+                    <span id="totalDayTime">0h Total Projected</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid: Critical Today & Schedule -->
+        <div class="main-grid">
+            <!-- Critical Today -->
+            <div class="card">
+                <h2 class="card-title">🔥 Critical Today</h2>
+                <div id="criticalItems"></div>
+            </div>
+
+            <!-- Today's Schedule -->
+            <div class="card">
+                <h2 class="card-title">⏰ Today's Schedule</h2>
+                <div id="todaySchedule"></div>
+                <div class="schedule-total">
+                    <div class="schedule-total-hours" id="totalScheduledHours">0 hours</div>
+                    <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">Total Scheduled</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Tasks - Full Width -->
+        <div class="tasks-section">
+            <h2 class="card-title">📋 Today's Tasks - Choose 3 Priorities</h2>
+            <div id="todayTasks"></div>
+            <div class="schedule-total">
+                <div class="schedule-total-hours" id="totalTaskHours">0 hours</div>
+                <div style="color: #9ca3af; font-size: 14px; margin-top: 4px;">Total Task Time Projected</div>
+            </div>
+        </div>
+
+        <!-- Bottom Grid: Quick Metrics & AI Insights -->
+        <div class="bottom-grid">
+            <!-- Quick Metrics -->
+            <div class="card">
+                <h2 class="card-title">📈 Quick Metrics</h2>
+                <div id="quickMetrics"></div>
+            </div>
+
+            <!-- AI Insights -->
+            <div class="card">
+                <h2 class="card-title">🤖 AI Insights & Analytics</h2>
+                <div class="ai-placeholder">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🧠</div>
+                    <div>AI-powered insights coming soon...</div>
+                    <div style="font-size: 14px; margin-top: 8px; opacity: 0.7;">
+                        Pattern analysis, recommendations, productivity insights
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* 
+         * WEATHER API SETUP:
+         * 1. Get a free API key from: https://openweathermap.org/api
+         * 2. Replace 'demo_key' with your actual API key in the fetchWeather() method
+         * 3. The app will automatically detect your location and show real weather
+         * 
+         * Current status: Running in demo mode with sample weather data
+         */
+        
+        // Storage and utility classes from the main app
+        class TaskStorage {
+            static get() {
+                const data = localStorage.getItem('legalTasks');
+                return data ? JSON.parse(data) : { tasks: [], nextId: 1 };
+            }
+
+            static save(data) {
+                localStorage.setItem('legalTasks', JSON.stringify(data));
+            }
+
+            static updateTask(id, updates) {
+                const data = this.get();
+                const taskIndex = data.tasks.findIndex(t => t.id === id);
+                if (taskIndex !== -1) {
+                    data.tasks[taskIndex] = { ...data.tasks[taskIndex], ...updates };
+                    this.save(data);
+                }
+            }
+        }
+
+        // Time Analytics for tracking metrics
+        class TimeAnalytics {
+            static getYesterdayTime() {
+                const data = TaskStorage.get();
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                return data.tasks
+                    .filter(task => task.completedDate && task.completedDate.startsWith(yesterdayStr))
+                    .reduce((total, task) => total + (task.timerElapsed || 0), 0);
+            }
+
+            static getWeekTime() {
+                const data = TaskStorage.get();
+                const now = new Date();
+                const weekStart = new Date(now);
+                weekStart.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
+                weekStart.setHours(0, 0, 0, 0);
+
+                return data.tasks
+                    .filter(task => {
+                        if (!task.timerElapsed) return false;
+                        const taskDate = new Date(task.completedDate || Date.now());
+                        return taskDate >= weekStart;
+                    })
+                    .reduce((total, task) => total + (task.timerElapsed || 0), 0);
+            }
+
+            static getMonthTime() {
+                const data = TaskStorage.get();
+                const now = new Date();
+                const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+                return data.tasks
+                    .filter(task => {
+                        if (!task.timerElapsed) return false;
+                        const taskDate = new Date(task.completedDate || Date.now());
+                        return taskDate >= monthStart;
+                    })
+                    .reduce((total, task) => total + (task.timerElapsed || 0), 0);
+            }
+
+            static formatTime(seconds) {
+                if (seconds < 3600) {
+                    const mins = Math.floor(seconds / 60);
+                    return `${mins}m`;
+                } else {
+                    const hours = Math.floor(seconds / 3600);
+                    const mins = Math.floor((seconds % 3600) / 60);
+                    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+                }
+            }
+        }
+
+        // Date utilities
+        class DateUtils {
+            static formatDateForDisplay(dateString) {
+                if (!dateString) return '';
+                
+                const today = new Date();
+                const todayStr = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+                
+                const dateOnly = dateString.split(' ')[0];
+                
+                if (dateOnly === todayStr) {
+                    const timePart = dateString.includes(' ') ? ' ' + dateString.split(' ').slice(1).join(' ') : '';
+                    return 'today' + timePart;
+                }
+                
+                return dateString;
+            }
+
+            static isToday(dateString) {
+                if (!dateString) return false;
+                
+                const today = new Date();
+                const todayFormats = [
+                    today.toISOString().split('T')[0],
+                    today.toLocaleDateString(),
+                    'today',
+                    today.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+                ];
+
+                return todayFormats.some(format => 
+                    dateString.toLowerCase().includes(format.toLowerCase())
+                );
+            }
+
+            static isOverdue(dateString) {
+                if (!dateString) return false;
+                
+                try {
+                    let taskDate = new Date(dateString);
+                    
+                    if (isNaN(taskDate)) {
+                        const parts = dateString.match(/(\d{1,2})[-\/](\d{1,2})(?:[-\/](\d{2,4}))?/);
+                        if (parts) {
+                            const month = parseInt(parts[1]) - 1;
+                            const day = parseInt(parts[2]);
+                            const year = parts[3] ? parseInt(parts[3]) : new Date().getFullYear();
+                            taskDate = new Date(year < 100 ? year + 2000 : year, month, day);
+                        }
+                    }
+                    
+                    if (!isNaN(taskDate)) {
+                        taskDate.setHours(23, 59, 59, 999);
+                        return taskDate < new Date();
+                    }
+                } catch (e) {
+                    return false;
+                }
+                
+                return false;
+            }
+        }
+
+        // Start of Day UI Manager
+        class StartOfDayUI {
+            constructor() {
+                this.init();
+                this.render();
+            }
+
+            init() {
+                // Initialize date
+                const now = new Date();
+                document.getElementById('currentDate').textContent = 
+                    now.toLocaleDateString('en-US', { 
+                        weekday: 'long',
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+
+                // Initialize weather (placeholder for now)
+                this.initWeather();
+            }
+
+            async initWeather() {
+                const weatherEl = document.getElementById('weatherInfo');
+                
+                try {
+                    // Use hardcoded coordinates for 90049 (West LA)
+                    const latitude = 34.0522;
+                    const longitude = -118.2437;
+                    
+                    // Fetch weather data from OpenWeatherMap
+                    const weather = await this.fetchWeather(latitude, longitude);
+                    
+                    if (weather) {
+                        const temp = Math.round(weather.main.temp);
+                        const condition = weather.weather[0].main;
+                        const description = weather.weather[0].description;
+                        const emoji = this.getWeatherEmoji(condition);
+                        
+                        weatherEl.innerHTML = `
+                            <span>${temp}°F ${emoji} ${this.capitalizeWords(description)}</span>
+                            ${this.getWeatherAdvice(condition, temp)}
+                        `;
+                    } else {
+                        weatherEl.textContent = 'Weather unavailable';
+                    }
+                } catch (error) {
+                    console.log('Weather fetch failed:', error);
+                    // Fallback to placeholder
+                    weatherEl.textContent = 'Weather unavailable';
+                }
+            }
+
+            async fetchWeather(lat, lon) {
+                // Free OpenWeatherMap API - you can get a key at openweathermap.org/api
+                const API_KEY = '2836c7a2c256d5fa3cb7e77d294edfb9'; // Your actual API key
+                
+                // Using the free demo for now - in production, replace with real key
+                const demoWeather = {
+                    main: { temp: 72 },
+                    weather: [{ main: 'Clear', description: 'clear sky' }]
+                };
+                
+                try {
+                    if (API_KEY === 'demo_key') {
+                        // Demo mode - return sample data
+                        return demoWeather;
+                    }
+                    
+                    const response = await fetch(
+                        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`
+                    );
+                    
+                    if (!response.ok) {
+                        throw new Error('Weather API failed');
+                    }
+                    
+                    return await response.json();
+                } catch (error) {
+                    console.log('Weather API error:', error);
+                    return demoWeather; // Fallback to demo data
+                }
+            }
+
+            getWeatherEmoji(condition) {
+                const emojiMap = {
+                    'Clear': '☀️',
+                    'Clouds': '☁️',
+                    'Rain': '🌧️',
+                    'Drizzle': '🌦️',
+                    'Thunderstorm': '⛈️',
+                    'Snow': '❄️',
+                    'Mist': '🌫️',
+                    'Fog': '🌫️',
+                    'Haze': '🌫️'
+                };
+                return emojiMap[condition] || '🌤️';
+            }
+
+            getWeatherAdvice(condition, temp) {
+                let advice = '';
+                
+                if (condition === 'Rain' || condition === 'Thunderstorm') {
+                    advice = ' • Bring umbrella for court';
+                } else if (condition === 'Snow') {
+                    advice = ' • Allow extra commute time';
+                } else if (temp > 85) {
+                    advice = ' • Consider lighter suit';
+                } else if (temp < 40) {
+                    advice = ' • Dress warmly for outdoor meetings';
+                }
+                
+                return advice ? `<div style="font-size: 12px; color: #9ca3af; margin-top: 2px;">${advice}</div>` : '';
+            }
+
+            capitalizeWords(str) {
+                return str.replace(/\b\w/g, l => l.toUpperCase());
+            }
+
+            render() {
+                this.renderCriticalItems();
+                this.renderTodaySchedule();
+                this.renderTodayTasks();
+                this.renderQuickMetrics();
+                this.updateTotalDayTime();
+            }
+
+            renderCriticalItems() {
+                const container = document.getElementById('criticalItems');
+                const data = TaskStorage.get();
+                
+                const criticalItems = data.tasks.filter(task => {
+                    if (task.completed) return false;
+                    
+                    // Critical priority items
+                    if (task.priority === 'critical') return true;
+                    
+                    // Items due today
+                    if (DateUtils.isToday(task.doDate)) return true;
+                    
+                    // Overdue items
+                    if (DateUtils.isOverdue(task.doDate)) return true;
+                    
+                    return false;
+                }).sort((a, b) => {
+                    // Sort overdue first, then by priority
+                    const aOverdue = DateUtils.isOverdue(a.doDate);
+                    const bOverdue = DateUtils.isOverdue(b.doDate);
+                    
+                    if (aOverdue && !bOverdue) return -1;
+                    if (!aOverdue && bOverdue) return 1;
+                    
+                    const priorities = { critical: 0, important: 1, strategic: 2, waiting: 3, someday: 4 };
+                    return priorities[a.priority] - priorities[b.priority];
+                });
+
+                if (criticalItems.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>🎉 All Clear!</h3>
+                            <p>No critical items or deadlines today</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = criticalItems.map(task => `
+                    <div class="critical-item">
+                        <button class="critical-checkbox ${task.completed ? 'checked' : ''}" 
+                                onclick="toggleTaskCompletion(${task.id})">
+                            ${task.completed ? '✓' : ''}
+                        </button>
+                        <div class="critical-title ${task.completed ? 'completed' : ''}">
+                            ${task.title || 'Untitled task'}
+                            ${DateUtils.isOverdue(task.doDate) ? ' ⚠️ OVERDUE' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderTodaySchedule() {
+                const container = document.getElementById('todaySchedule');
+                const data = TaskStorage.get();
+                
+                // Get events for today
+                const todayEvents = data.tasks.filter(task => 
+                    task.type === 'event' && 
+                    DateUtils.isToday(task.doDate)
+                ).sort((a, b) => {
+                    // Sort by time if available
+                    const aTime = this.parseTimeToMinutes(this.extractTime(a.doDate));
+                    const bTime = this.parseTimeToMinutes(this.extractTime(b.doDate));
+                    return aTime - bTime;
+                });
+
+                if (todayEvents.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>📅 No Events Scheduled</h3>
+                            <p>Your schedule is clear for today</p>
+                        </div>
+                    `;
+                    document.getElementById('totalScheduledHours').textContent = '0 hours';
+                    return;
+                }
+
+                let totalMinutes = 0;
+
+                container.innerHTML = todayEvents.map(event => {
+                    const time = this.extractTime(event.doDate);
+                    const duration = this.extractDuration(event.hours);
+                    totalMinutes += duration;
+
+                    return `
+                        <div class="schedule-item">
+                            <div class="schedule-time">${time}</div>
+                            <div class="schedule-title">${event.title || 'Untitled Event'}</div>
+                            <div class="schedule-duration">
+                                ${this.formatDuration(duration)}
+                                ${event.client ? `• ${event.client}` : ''}
+                                ${event.case ? `• ${event.case}` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Update total
+                const totalHours = Math.floor(totalMinutes / 60);
+                const remainingMinutes = totalMinutes % 60;
+                document.getElementById('totalScheduledHours').textContent = 
+                    `${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}`;
+            }
+
+            renderTodayTasks() {
+                const container = document.getElementById('todayTasks');
+                const data = TaskStorage.get();
+                
+                // Get tasks for today (excluding events which are shown in schedule)
+                const todayTasks = data.tasks.filter(task => 
+                    !task.completed &&
+                    task.type !== 'event' && 
+                    (DateUtils.isToday(task.doDate) || task.priority === 'critical' || task.priority === 'important')
+                ).sort((a, b) => {
+                    // Sort by priority star first, then by priority level
+                    const aStar = a.dayPriority || 0;
+                    const bStar = b.dayPriority || 0;
+                    
+                    if (aStar !== bStar) return bStar - aStar; // Stars first
+                    
+                    const priorities = { critical: 0, important: 1, strategic: 2, waiting: 3, someday: 4 };
+                    return priorities[a.priority] - priorities[b.priority];
+                });
+
+                if (todayTasks.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>✅ No Tasks for Today</h3>
+                            <p>All caught up!</p>
+                        </div>
+                    `;
+                    document.getElementById('totalTaskHours').textContent = '0 hours';
+                    return;
+                }
+
+                let totalTaskMinutes = 0;
+
+                container.innerHTML = todayTasks.map(task => {
+                    const taskDuration = this.extractDuration(task.hours);
+                    totalTaskMinutes += taskDuration;
+
+                    return `
+                        <div class="task-item ${task.dayPriority ? 'priority' : ''}">
+                            <button class="priority-star ${task.dayPriority ? 'active' : ''}" 
+                                    onclick="togglePriority(${task.id})">
+                                ${task.dayPriority ? '★' : '☆'}
+                                ${task.dayPriority ? `<span class="priority-number">${task.dayPriority}</span>` : ''}
+                            </button>
+                            <button class="task-checkbox ${task.completed ? 'checked' : ''}" 
+                                    onclick="toggleTaskCompletion(${task.id})">
+                                ${task.completed ? '✓' : ''}
+                            </button>
+                            <div class="task-content">
+                                <div class="task-title ${task.completed ? 'completed' : ''}">
+                                    ${task.title || 'Untitled task'}
+                                    ${task.hours ? `<span style="color: #9ca3af; font-size: 12px; margin-left: 8px;">(${this.formatDuration(taskDuration)})</span>` : ''}
+                                </div>
+                                <div class="task-badges">
+                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
+                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                    ${task.doDate ? `<span class="task-badge badge-date">📅 ${DateUtils.formatDateForDisplay(task.doDate)}</span>` : ''}
+                                    <span class="task-badge badge-priority">!${task.priority}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Update total task time
+                const totalHours = Math.floor(totalTaskMinutes / 60);
+                const remainingMinutes = totalTaskMinutes % 60;
+                document.getElementById('totalTaskHours').textContent = 
+                    `${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''}`;
+            }
+
+            renderQuickMetrics() {
+                const container = document.getElementById('quickMetrics');
+                const data = TaskStorage.get();
+                
+                // Calculate metrics
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+                
+                const yesterdayCompleted = data.tasks.filter(task => 
+                    task.completedDate && task.completedDate.startsWith(yesterdayStr)
+                ).length;
+                
+                const yesterdayTotal = data.tasks.filter(task => {
+                    if (task.completedDate && task.completedDate.startsWith(yesterdayStr)) return true;
+                    return DateUtils.isToday(task.doDate) && !task.completed;
+                }).length + yesterdayCompleted;
+
+                const activeCases = new Set(
+                    data.tasks
+                        .filter(task => !task.completed && task.case)
+                        .map(task => task.case)
+                ).size;
+
+                const thisWeekTasks = data.tasks.filter(task => {
+                    if (task.completed) return false;
+                    const now = new Date();
+                    const weekEnd = new Date(now);
+                    weekEnd.setDate(now.getDate() + (6 - now.getDay())); // End of week
+                    
+                    if (task.doDate) {
+                        try {
+                            const taskDate = new Date(task.doDate);
+                            return taskDate <= weekEnd;
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                    return false;
+                }).length;
+
+                const thisWeekEvents = data.tasks.filter(task => 
+                    task.type === 'event' && 
+                    task.doDate &&
+                    !task.completed
+                ).length;
+
+                const overdueItems = data.tasks.filter(task => 
+                    !task.completed && DateUtils.isOverdue(task.doDate)
+                ).length;
+
+                // Time metrics
+                const yesterdayTime = TimeAnalytics.getYesterdayTime();
+                const weekTime = TimeAnalytics.getWeekTime();
+                const monthTime = TimeAnalytics.getMonthTime();
+
+                const metrics = [
+                    {
+                        label: 'Yesterday Completed',
+                        value: `${yesterdayCompleted} of ${yesterdayTotal}`,
+                        className: yesterdayCompleted === yesterdayTotal ? 'success' : 'warning'
+                    },
+                    {
+                        label: 'Yesterday Time Logged',
+                        value: TimeAnalytics.formatTime(yesterdayTime),
+                        className: yesterdayTime > 0 ? 'success' : ''
+                    },
+                    {
+                        label: 'Active Cases',
+                        value: activeCases.toString(),
+                        className: ''
+                    },
+                    {
+                        label: 'This Week Time',
+                        value: TimeAnalytics.formatTime(weekTime),
+                        className: weekTime > 144000 ? 'success' : 'warning' // 40 hours
+                    },
+                    {
+                        label: 'This Week Tasks/Events',
+                        value: `${thisWeekTasks} tasks, ${thisWeekEvents} events`,
+                        className: ''
+                    },
+                    {
+                        label: 'This Month Time',
+                        value: TimeAnalytics.formatTime(monthTime),
+                        className: monthTime > 576000 ? 'success' : 'warning' // 160 hours
+                    },
+                    {
+                        label: 'Overdue Items',
+                        value: overdueItems.toString(),
+                        className: overdueItems === 0 ? 'success' : 'danger'
+                    }
+                ];
+
+                container.innerHTML = metrics.map(metric => `
+                    <div class="metric-item">
+                        <div class="metric-label">${metric.label}:</div>
+                        <div class="metric-value ${metric.className}">${metric.value}</div>
+                    </div>
+                `).join('');
+            }
+
+            extractTime(dateString) {
+                if (!dateString) return '9:00 AM';
+                
+                const timeMatch = dateString.match(/\d{1,2}:\d{2}\s*(?:am|pm)?/i);
+                if (timeMatch) {
+                    return timeMatch[0];
+                }
+                
+                const hourMatch = dateString.match(/\d{1,2}\s*(am|pm)/i);
+                if (hourMatch) {
+                    return hourMatch[0];
+                }
+                
+                return '9:00 AM';
+            }
+
+            parseTimeToMinutes(timeString) {
+                // Convert time string like "9:30 AM" or "2:15 PM" to minutes from midnight
+                const match = timeString.match(/(\d{1,2}):?(\d{2})?\s*(am|pm)?/i);
+                if (!match) return 540; // Default to 9:00 AM
+                
+                let hours = parseInt(match[1]);
+                const minutes = parseInt(match[2] || '0');
+                const period = (match[3] || '').toLowerCase();
+                
+                // Convert to 24-hour format
+                if (period === 'pm' && hours !== 12) {
+                    hours += 12;
+                } else if (period === 'am' && hours === 12) {
+                    hours = 0;
+                } else if (!period) {
+                    // If no AM/PM specified, assume business hours (8 AM - 8 PM)
+                    if (hours < 8) {
+                        hours += 12; // Assume PM
+                    }
+                }
+                
+                return hours * 60 + minutes;
+            }
+
+            extractDuration(hoursString) {
+                if (!hoursString) return 60; // Default 1 hour
+                
+                const hourMatch = hoursString.match(/(\d+(?:\.\d+)?)\s*h/);
+                if (hourMatch) {
+                    return Math.round(parseFloat(hourMatch[1]) * 60);
+                }
+                
+                const minMatch = hoursString.match(/(\d+)\s*m/);
+                if (minMatch) {
+                    return parseInt(minMatch[1]);
+                }
+                
+                return 60;
+            }
+
+            formatDuration(minutes) {
+                if (minutes < 60) {
+                    return `${minutes}m`;
+                } else {
+                    const hours = Math.floor(minutes / 60);
+                    const mins = minutes % 60;
+                    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+                }
+            }
+
+            updateTotalDayTime() {
+                const data = TaskStorage.get();
+                let totalMinutes = 0;
+                
+                // Add scheduled events time
+                const todayEvents = data.tasks.filter(task => 
+                    task.type === 'event' && 
+                    DateUtils.isToday(task.doDate)
+                );
+                
+                todayEvents.forEach(event => {
+                    totalMinutes += this.extractDuration(event.hours);
+                });
+                
+                // Add projected task time
+                const todayTasks = data.tasks.filter(task => 
+                    !task.completed &&
+                    task.type !== 'event' && 
+                    (DateUtils.isToday(task.doDate) || task.priority === 'critical' || task.priority === 'important')
+                );
+                
+                todayTasks.forEach(task => {
+                    totalMinutes += this.extractDuration(task.hours);
+                });
+                
+                // Update the header display
+                const totalHours = Math.floor(totalMinutes / 60);
+                const remainingMinutes = totalMinutes % 60;
+                const totalText = `${totalHours}h${remainingMinutes > 0 ? ` ${remainingMinutes}m` : ''} Total Projected`;
+                
+                document.getElementById('totalDayTime').textContent = totalText;
+            }
+        }
+
+        // Global functions
+        function toggleTaskCompletion(taskId) {
+            const data = TaskStorage.get();
+            const task = data.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const updates = { 
+                completed: !task.completed
+            };
+            
+            if (!task.completed) {
+                updates.completedDate = new Date().toISOString();
+            } else {
+                updates.completedDate = null;
+            }
+
+            TaskStorage.updateTask(taskId, updates);
+            startOfDayUI.render();
+        }
+
+        function togglePriority(taskId) {
+            const data = TaskStorage.get();
+            const task = data.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            if (!task.dayPriority) {
+                // Count how many tasks currently have priorities
+                const prioritizedTasks = data.tasks.filter(t => t.dayPriority && t.dayPriority >= 1 && t.dayPriority <= 3);
+                
+                if (prioritizedTasks.length >= 3) {
+                    // All 3 slots taken, don't add more
+                    return;
+                }
+                
+                // Assign the next number in sequence (1, 2, 3)
+                const nextPriorityNumber = prioritizedTasks.length + 1;
+                TaskStorage.updateTask(taskId, { dayPriority: nextPriorityNumber });
+            } else {
+                // Remove priority and renumber remaining tasks
+                const currentPriority = task.dayPriority;
+                TaskStorage.updateTask(taskId, { dayPriority: null });
+                
+                // Get fresh data after update
+                const updatedData = TaskStorage.get();
+                
+                // Renumber tasks with higher priorities to fill the gap
+                updatedData.tasks.forEach(t => {
+                    if (t.dayPriority && t.dayPriority > currentPriority) {
+                        TaskStorage.updateTask(t.id, { dayPriority: t.dayPriority - 1 });
+                    }
+                });
+            }
+
+            startOfDayUI.render();
+        }
+
+        // Initialize the app
+        let startOfDayUI;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            startOfDayUI = new StartOfDayUI();
+        });
+    </script>
+</body>
+</html>

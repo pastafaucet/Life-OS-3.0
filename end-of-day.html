@@ -242,6 +242,20 @@
         .badge-priority { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
         .badge-type { background: rgba(34, 197, 94, 0.1); color: #4ade80; }
 
+        /* Empty Badge Styles */
+        .badge-empty {
+            background: rgba(107, 114, 128, 0.1);
+            color: #6b7280;
+            border: 1px dashed #374151;
+            opacity: 0.6;
+        }
+
+        .badge-empty:hover {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+            opacity: 1;
+        }
+
         /* Editable Date Badge */
         .badge-date {
             background: rgba(251, 191, 36, 0.1);
@@ -978,11 +992,13 @@
                             <div class="task-content">
                                 <div class="task-title">${task.title || 'Untitled task'}</div>
                                 <div class="task-badges">
-                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'type\')">type</span>'}
                                     <span class="task-badge badge-priority">!${task.priority}</span>
-                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
-                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'client\')">@client</span>'}
+                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'case\')">#case</span>'}
                                     ${task.doDate ? `<span class="task-badge badge-date">📅 ${DateUtils.formatDateForDisplay(task.doDate)}</span>` : ''}
+                                    ${task.hours ? `<span class="task-badge" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">⏱️ ${task.hours}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'hours\')">⏱️ estimate</span>'}
+                                    ${task.timerElapsed && task.timerElapsed > 0 ? `<span class="task-badge" style="background: rgba(34, 197, 94, 0.1); color: #4ade80;">⏰ ${this.formatDuration(Math.floor(task.timerElapsed / 60))}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1018,10 +1034,10 @@
                             <div class="task-content">
                                 <div class="task-title">${task.title || 'Untitled task'}</div>
                                 <div class="task-badges">
-                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : ''}
+                                    ${task.type ? `<span class="task-badge badge-type">${this.getTypeIcon(task.type)}${task.type}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'type\')">type</span>'}
                                     <span class="task-badge badge-priority">!${task.priority}</span>
-                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : ''}
-                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : ''}
+                                    ${task.client ? `<span class="task-badge badge-client">@${task.client}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'client\')">@client</span>'}
+                                    ${task.case ? `<span class="task-badge badge-case">#${task.case}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'case\')">#case</span>'}
                                     <span class="task-badge badge-date ${DateUtils.isOverdue(task.doDate) ? 'overdue' : ''}" onclick="showDatePicker(${task.id}, event)">
                                         📅 ${DateUtils.isOverdue(task.doDate) ? 'overdue' : 'tomorrow'}
                                         <div class="date-dropdown" id="dropdown-${task.id}">
@@ -1031,6 +1047,8 @@
                                             <div class="date-option" onclick="showCalendarPicker(${task.id}, event)">📅 Pick Date...</div>
                                         </div>
                                     </span>
+                                    ${task.hours ? `<span class="task-badge" style="background: rgba(168, 85, 247, 0.1); color: #a855f7;">⏱️ ${task.hours}</span>` : '<span class="task-badge badge-empty" onclick="editTaskField(' + task.id + ', \'hours\')">⏱️ estimate</span>'}
+                                    ${task.timerElapsed && task.timerElapsed > 0 ? `<span class="task-badge" style="background: rgba(34, 197, 94, 0.1); color: #4ade80;">⏰ ${this.formatDuration(Math.floor(task.timerElapsed / 60))}</span>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -1444,6 +1462,19 @@
             }
             
             endOfDayUI.render();
+        }
+
+        // Edit task field function for empty badges
+        function editTaskField(taskId, field) {
+            const currentValue = '';
+            const newValue = prompt(`Enter ${field}:`, currentValue);
+            
+            if (newValue !== null && newValue.trim() !== '') {
+                const updates = {};
+                updates[field] = newValue.trim();
+                TaskStorage.updateTask(taskId, updates);
+                endOfDayUI.render();
+            }
         }
 
         // Initialize the app
